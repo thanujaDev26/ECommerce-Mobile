@@ -1,48 +1,101 @@
+import 'package:e_commerce/features/categories/widgets/banner_carousel.dart';
 import 'package:flutter/material.dart';
 
-class CategoriesList extends StatefulWidget {
+class CategoriesList extends StatelessWidget {
   const CategoriesList({super.key});
 
-  @override
-  State<CategoriesList> createState() => _CategoriesListState();
-}
-
-class _CategoriesListState extends State<CategoriesList> {
-  final List<Map<String, dynamic>> categories = [
-    {"label": "Handcrafts", "icon": Icons.handyman, "route": "/handcrafts"},
-    {"label": "Spices", "icon": Icons.local_fire_department, "route": "/spices"},
-    {"label": "Herbal", "icon": Icons.eco, "route": "/herbal"},
-    {"label": "Clay Pots", "icon": Icons.rice_bowl, "route": "/claypots"},
-    {"label": "Beverages", "icon": Icons.local_cafe, "route": "/beverages"},
+  final List<Map<String, String>> categories = const [
+    {
+      "label": "Handcrafts",
+      "image": "assets/categories/handcrafts.png",
+      "route": "/handcrafts"
+    },
+    {
+      "label": "Spices",
+      "image": "assets/categories/spices.png",
+      "route": "/spices"
+    },
+    {
+      "label": "Herbal",
+      "image": "assets/categories/herbal.png",
+      "route": "/herbal"
+    },
+    {
+      "label": "Clay Pots",
+      "image": "assets/categories/herbal.png",
+      "route": "/claypots"
+    },
+    {
+      "label": "Beverages",
+      "image": "assets/categories/beverages.png",
+      "route": "/beverages"
+    },
+    {
+      "label": "Foods",
+      "image": "assets/categories/foods.png",
+      "route": "/foods"
+    },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Categories')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView.separated(
-          itemCount: categories.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            return Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: ListTile(
-                leading: CircleAvatar(
-                  radius: 24,
-                  child: Icon(category["icon"], size: 28),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              const BannerCarousel(),
+              const SizedBox(height: 24),
+              GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: categories.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 3 / 3.5,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
                 ),
-                title: Text(category["label"], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 18),
-                onTap: () {
-                  Navigator.pushNamed(context, category["route"]);
+                itemBuilder: (context, index) {
+                  final category = categories[index];
+                  return GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, category["route"]!),
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                              child: Image.asset(
+                                category["image"]!,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Center(
+                              child: Text(
+                                category["label"]!,
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                 },
               ),
-            );
-          },
+            ],
+          ),
         ),
       ),
     );

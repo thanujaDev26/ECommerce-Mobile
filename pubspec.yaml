@@ -55,6 +55,12 @@ flutter:
     - assets/demo_images/wood_rack.png
     - assets/demo_images/holder.png
     - assets/demo_images/garayaka.png
+    - assets/categories/handcrafts.png
+    - assets/categories/herbal.png
+    - assets/categories/spices.png
+    - assets/categories/beverages.png
+    - assets/categories/foods.png
+    - assets/categories/pots.png
 
 flutter_icons:
   android: true

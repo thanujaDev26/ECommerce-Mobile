@@ -32,6 +32,7 @@ class ECommerceMobileAPp extends StatelessWidget {
         '/herbal': (context) => const Herbal(),
         '/claypots': (context) => const ClayPots(),
         '/beverages': (context) => const Tea(),
+        '/foods': (context) => const Tea(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
