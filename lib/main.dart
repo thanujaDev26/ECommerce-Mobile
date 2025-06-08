@@ -6,6 +6,7 @@ import 'package:e_commerce/features/categories/views/herbal.dart';
 import 'package:e_commerce/features/categories/views/spices.dart';
 import 'package:e_commerce/features/categories/views/tea.dart';
 import 'package:e_commerce/features/dashboard/views/dashboard_screen.dart';
+import 'package:e_commerce/features/payment/views/payment_ui_screen.dart';
 import 'package:e_commerce/features/profile/views/profile_page.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,7 @@ class ECommerceMobileAPp extends StatelessWidget {
         '/claypots': (context) => const ClayPots(),
         '/beverages': (context) => const Tea(),
         '/foods': (context) => const Tea(),
+        '/payment':(context) => const PaymentUiScreen(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

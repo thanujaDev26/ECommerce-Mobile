@@ -22,7 +22,7 @@ class CategoriesList extends StatelessWidget {
     },
     {
       "label": "Clay Pots",
-      "image": "assets/categories/herbal.png",
+      "image": "assets/categories/pots.png",
       "route": "/claypots"
     },
     {

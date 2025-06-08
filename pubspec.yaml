@@ -29,6 +29,7 @@ dependencies:
   getwidget: ^6.0.0
   velocity_x: ^4.3.1
   flutter_launcher_icons: ^0.14.3
+  video_player: ^2.10.0
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +45,7 @@ flutter:
     - assets/banners/banner2.png
     - assets/banners/banner3.png
     - assets/banners/banner4.png
+    - assets/banners/add.png
     - assets/images/default_product.png
     - assets/demo_images/beeralu_lace_table_runner.png
     - assets/demo_images/coconut_shell_ladle_set.png
@@ -61,6 +63,12 @@ flutter:
     - assets/categories/beverages.png
     - assets/categories/foods.png
     - assets/categories/pots.png
+    - assets/apple-pay.png
+    - assets/apple-pay2.png
+    - assets/CrediCard.png
+    - assets/google-pay.png
+    - assets/paypal.png
+    - assets/cash-on-delivery.png
 
 flutter_icons:
   android: true
