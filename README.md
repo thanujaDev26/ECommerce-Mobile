@@ -1,16 +1,52 @@
-# e_commerce
+# 🛍️ ShopIt – Sri Lankan Handcraft E-commerce App
 
-A new Flutter project.
+![ShopIt Banner](https://github.com/thanujaDev26/ECommerce-Mobile/blob/main/assets/main.png) <!-- Replace with actual image path -->
 
-## Getting Started
+**ShopIt** is a mobile application designed to connect buyers and sellers of authentic Sri Lankan traditional handcrafts from all corners of the island. Whether you’re looking to purchase unique handmade products or showcase your craft to a wider audience, ShopIt is your gateway.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 📱 Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- 🔐 **User Authentication**  
+  - Customer registration and login via Firebase Auth  
+  - JWT-based token handling for secure backend communication  
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- 🛒 **Buyer Functionality**  
+  - Browse handcrafted items by category  
+  - Add items to a shopping cart  
+  - Place and manage orders  
+  - Integrated payment gateway for easy checkout  
+
+- 🧵 **Seller Functionality** *(Coming Soon)*  
+  - Add and manage products  
+  - Track orders and sales  
+
+---
+
+## 🧰 Tech Stack
+
+| Layer         | Technology                     |
+|---------------|-------------------------------|
+| Frontend      | Flutter                        |
+| Backend       | Node.js (Express)              |
+| Authentication| Firebase Auth + JWT Token      |
+| Database      | AWS RDS (Relational Database)  |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Flutter SDK
+- Node.js
+- Firebase Project
+- AWS RDS Instance
+
+### Installation
+
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/thanujaDev26/ECommerce-Mobile.git
+   cd ECommerce-Mobile
