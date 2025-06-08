@@ -11,30 +11,31 @@ class RecommendedItems extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> recommended = [
       {
-        "title": "Fitness Tracker",
-        "price": 49.99,
-        "rating": 4.1,
-        "image": "https://via.placeholder.com/150.png?text=Fitness+Tracker"
+        "title": "Kithul Honey Gift Bottle",
+        "price": 8.75,
+        "rating": 4.4,
+        "image": "assets/demo_images/kithul-honey.png",
       },
       {
-        "title": "Laptop Stand",
+        "title": "Traditional Garayaka Mask",
         "price": 25.00,
+        "rating": 4.8,
+        "image": "assets/demo_images/garayaka.png",
+      },
+      {
+        "title": "Wooden Spice Rack Set",
+        "price": 19.99,
         "rating": 4.6,
-        "image": "https://via.placeholder.com/150.png?text=Laptop+Stand"
+        "image": "assets/demo_images/wood_rack.png",
       },
       {
-        "title": "LED Desk Lamp",
-        "price": 35.00,
-        "rating": 4.3,
-        "image": "https://via.placeholder.com/150.png?text=Desk+Lamp"
-      },
-      {
-        "title": "Noise Cancelling Earbuds",
-        "price": 79.99,
-        "rating": 4.7,
-        "image": "https://via.placeholder.com/150.png?text=Earbuds"
+        "title": "Painted Terracotta Incense Holder",
+        "price": 7.25,
+        "rating": 4.5,
+        "image": "assets/demo_images/holder.png",
       },
     ];
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +49,7 @@ class RecommendedItems extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         SizedBox(
-          height: 230,
+          height: 250,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
@@ -73,18 +74,13 @@ class RecommendedItems extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
-                      borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(14)),
-                      child: CachedNetworkImage(
-                        imageUrl: item["image"],
-                        height: 100,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                      child:
+                      Image.asset(
+                        item["image"],
+                        height: 150,
                         width: double.infinity,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) =>
-                        const Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) => Image.asset(
-                            AppAssets.defaultProductImage,
-                            fit: BoxFit.cover),
                       ),
                     ),
                     Padding(

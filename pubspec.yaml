@@ -45,6 +45,16 @@ flutter:
     - assets/banners/banner3.png
     - assets/banners/banner4.png
     - assets/images/default_product.png
+    - assets/demo_images/beeralu_lace_table_runner.png
+    - assets/demo_images/coconut_shell_ladle_set.png
+    - assets/demo_images/dumbara_mats.png
+    - assets/demo_images/hand_carved_wooden_mask.png
+    - assets/demo_images/traditional_clay_pot.png
+    - assets/demo_images/wooden_elephant.png
+    - assets/demo_images/kithul-honey.png
+    - assets/demo_images/wood_rack.png
+    - assets/demo_images/holder.png
+    - assets/demo_images/garayaka.png
 
 flutter_icons:
   android: true

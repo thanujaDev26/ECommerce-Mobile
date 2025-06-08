@@ -11,34 +11,44 @@ class TopItemsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> topItems = [
       {
-        "title": "Wireless Headphones",
-        "price": 59.99,
-        "rating": 4.5,
-        "image":
-        "https://via.placeholder.com/150x150.png?text=Headphones"
-      },
-      {
-        "title": "Smart Watch",
-        "price": 129.00,
-        "rating": 4.2,
-        "image":
-        "https://via.placeholder.com/150x150.png?text=Smart+Watch"
-      },
-      {
-        "title": "Gaming Mouse",
-        "price": 29.99,
+        "title": "Lacquered Wooden Elephant",
+        "price": 4500.00,
         "rating": 4.8,
-        "image":
-        "https://via.placeholder.com/150x150.png?text=Gaming+Mouse"
+        "image": "assets/demo_images/wooden_elephant.png",
       },
       {
-        "title": "Bluetooth Speaker",
-        "price": 45.00,
-        "rating": 4.4,
-        "image":
-        "https://via.placeholder.com/150x150.png?text=Speaker"
+        "title": "Handwoven Dumbara Mats",
+        "price": 3200.00,
+        "rating": 4.7,
+        "image": "assets/demo_images/dumbara_mats.png",
+      },
+      {
+        "title": "Traditional Clay Pot Set",
+        "price": 2800.00,
+        "rating": 4.6,
+        "image": "assets/demo_images/traditional_clay_pot.png",
+      },
+      {
+        "title": "Hand-Carved Wooden Mask",
+        "price": 6500.00,
+        "rating": 4.9,
+        "image": "assets/demo_images/hand_carved_wooden_mask.png",
+      },
+      {
+        "title": "Coconut Shell Ladle Set",
+        "price": 1200.00,
+        "rating": 4.5,
+        "image": "assets/demo_images/coconut_shell_ladle_set.png",
+      },
+      {
+        "title": "Beeralu Lace Table Runner",
+        "price": 3800.00,
+        "rating": 4.6,
+        "image": "assets/demo_images/beeralu_lace_table_runner.png",
       },
     ];
+
+
 
     return GridView.builder(
       itemCount: topItems.length,
@@ -68,17 +78,14 @@ class TopItemsGrid extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Product Image
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-                child: CachedNetworkImage(
-                  imageUrl: item["image"],
+                child:
+                Image.asset(
+                  item["image"],
                   height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                  errorWidget: (context, url, error) =>
-                      Image.asset(AppAssets.defaultProductImage, fit: BoxFit.cover),
                 ),
               ),
               Padding(
