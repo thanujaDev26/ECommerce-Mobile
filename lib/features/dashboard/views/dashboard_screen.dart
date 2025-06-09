@@ -7,16 +7,26 @@ import 'package:e_commerce/features/dashboard/widgets/category_list.dart';
 import 'package:e_commerce/features/dashboard/widgets/recommended_items.dart';
 import 'package:e_commerce/features/dashboard/widgets/top_items_grid.dart';
 import 'package:e_commerce/features/profile/views/profile_page.dart';
+import 'package:e_commerce/features/sidebar/views/sidebar_view.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+
+  final bool isDarkMode;
+  final Function(bool) onThemeChanged;
+
+  const DashboardScreen({
+    super.key,
+    required this.isDarkMode,
+    required this.onThemeChanged,
+  });
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+
   int _currentIndex = 0;
 
   final List<Widget> _pages = const [
@@ -32,26 +42,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors().background,
+      // backgroundColor: AppColors().background,
+
+      drawer: AppSidebar(isDarkMode: widget.isDarkMode, onThemeChanged: widget.onThemeChanged),
+      // appBar: AppBar(),
       appBar: AppBar(
         backgroundColor: AppColors().primary,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 14,
-        unselectedFontSize: 14,
-        selectedItemColor: AppColors().primary,
-        unselectedItemColor: Colors.grey,
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.category), label: "Categories"),
