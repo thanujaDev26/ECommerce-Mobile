@@ -47,6 +47,7 @@ flutter:
     - assets/banners/banner4.png
     - assets/banners/add.png
     - assets/images/default_product.png
+    - assets/images/cods.png
     - assets/demo_images/beeralu_lace_table_runner.png
     - assets/demo_images/coconut_shell_ladle_set.png
     - assets/demo_images/dumbara_mats.png
@@ -57,6 +58,7 @@ flutter:
     - assets/demo_images/wood_rack.png
     - assets/demo_images/holder.png
     - assets/demo_images/garayaka.png
+    - assets/demo_images/0618.mp4
     - assets/categories/handcrafts.png
     - assets/categories/herbal.png
     - assets/categories/spices.png
@@ -73,4 +75,4 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/main.png"
+  image_path: "assets/main_icon.png"

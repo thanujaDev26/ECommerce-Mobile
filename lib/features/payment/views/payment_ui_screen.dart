@@ -1,4 +1,6 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:e_commerce/features/payment/widgets/advert_video_player.dart';
 import 'package:flutter/material.dart';
 
 class PaymentUiScreen extends StatefulWidget {
@@ -15,6 +17,22 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
   final TextEditingController cardNumberController = TextEditingController();
   final TextEditingController expiryController = TextEditingController();
   final TextEditingController cvvController = TextEditingController();
+
+  final List<String> sponsorImages = [
+    'assets/banners/banner1.png',
+    'assets/banners/banner2.png',
+    'assets/banners/banner3.png',
+  ];
+
+  final CarouselOptions carouselOptions = CarouselOptions(
+    height: 160,
+    autoPlay: true,
+    enlargeCenterPage: true,
+    viewportFraction: 0.8,
+    aspectRatio: 16 / 9,
+    autoPlayInterval: const Duration(seconds: 3),
+  );
+
 
   String couponMessage = "";
   bool isCvvObscured = true;
@@ -95,7 +113,6 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text("Payment"),
         centerTitle: true,
         backgroundColor: primaryColor,
         elevation: 0,
@@ -123,28 +140,30 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
                   ),
                 ],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Total Amount",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white.withOpacity(0.9),
-                      fontWeight: FontWeight.w500,
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Total Amount",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white.withOpacity(0.9),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Rs. ${finalAmount.toStringAsFixed(2)}",
-                    style: const TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 1.2,
+                    const SizedBox(height: 10),
+                    Text(
+                      "Rs. ${finalAmount.toStringAsFixed(2)}",
+                      style: const TextStyle(
+                        fontSize: 42,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 1.2,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 
@@ -179,25 +198,49 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            Container(
-              height: 200,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 20,
-                    offset: Offset(0, 6),
-                  ),
-                ],
-                image: const DecorationImage(
-                  image: AssetImage("assets/banners/add.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            AdvertVideoPlayer(videoPath: "assets/demo_images/0618.mp4"),
+            // CarouselSlider(
+            //   items: sponsorImages
+            //       .map((imgPath) => Container(
+            //     margin: const EdgeInsets.symmetric(horizontal: 8),
+            //     decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(16),
+            //       image: DecorationImage(
+            //         image: AssetImage(imgPath),
+            //         fit: BoxFit.cover,
+            //       ),
+            //       boxShadow: const [
+            //         BoxShadow(
+            //           color: Colors.black26,
+            //           blurRadius: 10,
+            //           offset: Offset(0, 4),
+            //         ),
+            //       ],
+            //     ),
+            //   ))
+            //       .toList(),
+            //   options: carouselOptions,
+            // ),
+            // Container(
+            //   height: 200,
+            //   width: double.infinity,
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     borderRadius: BorderRadius.circular(20),
+            //     boxShadow: [
+            //       BoxShadow(
+            //         color: Colors.black12,
+            //         blurRadius: 20,
+            //         offset: Offset(0, 6),
+            //       ),
+            //     ],
+            //     // image: const DecorationImage(
+            //     //   image: AssetImage("assets/banners/add.png"),
+            //     //   fit: BoxFit.cover,
+            //     // ),
+            //
+            //   ),
+            // ),
 
 
             Text(
