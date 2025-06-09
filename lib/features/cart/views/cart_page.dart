@@ -25,8 +25,10 @@ class _CartPageState extends State<CartPage> {
   ];
 
   int get totalPrice => cartItems.fold<int>(
-    0, (sum, item) => sum + (item['price'] as int) * (item['quantity'] as int),
+    0,
+        (sum, item) => sum + (item['price'] as int) * (item['quantity'] as int),
   );
+
   void updateQuantity(int index, bool increment) {
     setState(() {
       if (increment) {
@@ -39,9 +41,22 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      body: cartItems.isEmpty
-          ? const Center(child: Text("Your cart is empty"))
+      backgroundColor: theme.colorScheme.background,
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: (){
+          FocusScope.of(context).unfocus();
+        },
+        child: cartItems.isEmpty
+          ? Center(
+            child: Text(
+            "Your cart is empty",
+            style: theme.textTheme.titleMedium,
+          ))
           : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -59,20 +74,23 @@ class _CartPageState extends State<CartPage> {
                       alignment: Alignment.centerRight,
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       decoration: BoxDecoration(
-                          color: Color(0xFF490A06),
-                          borderRadius: BorderRadius.circular(16),
+                        color: theme.colorScheme.error,
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       child: const Icon(Icons.delete, color: Colors.white),
                     ),
-                    onDismissed: (direction) {
+                    onDismissed: (_) {
                       setState(() {
                         cartItems.removeAt(index);
                       });
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${item['name']} removed from cart')),
+                        SnackBar(
+                          content: Text('${item['name']} removed from cart'),
+                        ),
                       );
                     },
                     child: Card(
+                      color: theme.cardColor,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16)),
                       elevation: 3,
@@ -94,13 +112,10 @@ class _CartPageState extends State<CartPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(item['name'],
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600)),
+                                    style: theme.textTheme.titleMedium),
                                 const SizedBox(height: 8),
                                 Text('Rs. ${item['price']}',
-                                    style: const TextStyle(
-                                        color: Colors.grey)),
+                                    style: theme.textTheme.bodySmall),
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
@@ -131,18 +146,15 @@ class _CartPageState extends State<CartPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Total:",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Rs. $totalPrice",
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                Text("Total:",
+                    style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold)),
+                Text("Rs. $totalPrice",
+                    style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 20),
-
             Row(
               children: [
                 Expanded(
@@ -173,11 +185,16 @@ class _CartPageState extends State<CartPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      side: BorderSide(color: AppColors().primary),
+                      side: BorderSide(
+                          color: AppColors().primary, width: 1.5),
                     ),
-                    child: const Text(
+                    child: Text(
                       "More Products",
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -185,7 +202,7 @@ class _CartPageState extends State<CartPage> {
             ),
           ],
         ),
-      ),
+      ),)
     );
   }
 }

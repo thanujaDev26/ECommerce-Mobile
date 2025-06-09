@@ -1,14 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:e_commerce/app/constants/app_assets.dart';
-import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:e_commerce/app/constants/app_colors.dart';
 
 class TopItemsGrid extends StatelessWidget {
   const TopItemsGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     final List<Map<String, dynamic>> topItems = [
       {
         "title": "Lacquered Wooden Elephant",
@@ -48,8 +49,6 @@ class TopItemsGrid extends StatelessWidget {
       },
     ];
 
-
-
     return GridView.builder(
       itemCount: topItems.length,
       shrinkWrap: true,
@@ -65,11 +64,11 @@ class TopItemsGrid extends StatelessWidget {
         final item = topItems[index];
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.shade200,
+                color: isDark ? Colors.black12 : Colors.grey.shade200,
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -80,8 +79,7 @@ class TopItemsGrid extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-                child:
-                Image.asset(
+                child: Image.asset(
                   item["image"],
                   height: 120,
                   width: double.infinity,
@@ -94,7 +92,10 @@ class TopItemsGrid extends StatelessWidget {
                   item["title"],
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
                 ),
               ),
               Padding(

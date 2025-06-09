@@ -11,9 +11,7 @@ class PaymentUiScreen extends StatefulWidget {
 
 class _PaymentDashboardState extends State<PaymentUiScreen> {
   String selectedPaymentMethod = "Credit Card";
-  final primaryColor = AppColors().primary;
   final TextEditingController couponController = TextEditingController();
-
   final TextEditingController cardNumberController = TextEditingController();
   final TextEditingController expiryController = TextEditingController();
   final TextEditingController cvvController = TextEditingController();
@@ -33,7 +31,6 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
     autoPlayInterval: const Duration(seconds: 3),
   );
 
-
   String couponMessage = "";
   bool isCvvObscured = true;
   bool isLoading = false;
@@ -51,7 +48,6 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
   }
 
   bool _validateExpiry(String input) {
-
     return RegExp(r'^(0[1-9]|1[0-2])\/?([0-9]{2})$').hasMatch(input);
   }
 
@@ -85,9 +81,7 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
     }
 
     setState(() => isLoading = true);
-
     await Future.delayed(const Duration(seconds: 2));
-
     setState(() => isLoading = false);
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -110,8 +104,13 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = AppColors().primary;
+    final backgroundColor = isDark ? Colors.black : Colors.white;
+
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: primaryColor,
@@ -120,36 +119,35 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Total Amount Card
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [primaryColor.withOpacity(0.9), primaryColor],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: primaryColor.withOpacity(0.4),
-                    offset: const Offset(0, 8),
-                    blurRadius: 20,
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [primaryColor.withOpacity(0.9), primaryColor],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ],
-              ),
-              child: Center(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: primaryColor.withOpacity(0.4),
+                      offset: const Offset(0, 8),
+                      blurRadius: 20,
+                    ),
+                  ],
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       "Total Amount",
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         color: Colors.white.withOpacity(0.9),
-                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -168,92 +166,33 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
             ),
 
             const SizedBox(height: 30),
-
-            Text(
-              "Select Payment Method",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
-              ),
+            Align(
+              alignment: Alignment.center,
+              child: Text("Select Payment Method", style: theme.textTheme.titleMedium),
             ),
 
             const SizedBox(height: 16),
-
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: [
-                _paymentMethodButton("Credit/Debit", "assets/CrediCard.png"),
-                _paymentMethodButton("Cash On Delivery", "assets/cash-on-delivery.png"),
-              ],
+            Align(
+              alignment: Alignment.center,
+              child: Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                alignment: WrapAlignment.center,
+                children: [
+                  _paymentMethodButton("Credit/Debit", "assets/CrediCard.png"),
+                  _paymentMethodButton("Cash On Delivery", "assets/cash-on-delivery.png"),
+                ],
+              ),
             ),
             const SizedBox(height: 30),
-            Text(
-              "Sponsored",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
-              ),
-            ),
+
+            Text("Sponsored", style: theme.textTheme.titleMedium),
             const SizedBox(height: 12),
             AdvertVideoPlayer(videoPath: "assets/demo_images/0618.mp4"),
-            // CarouselSlider(
-            //   items: sponsorImages
-            //       .map((imgPath) => Container(
-            //     margin: const EdgeInsets.symmetric(horizontal: 8),
-            //     decoration: BoxDecoration(
-            //       borderRadius: BorderRadius.circular(16),
-            //       image: DecorationImage(
-            //         image: AssetImage(imgPath),
-            //         fit: BoxFit.cover,
-            //       ),
-            //       boxShadow: const [
-            //         BoxShadow(
-            //           color: Colors.black26,
-            //           blurRadius: 10,
-            //           offset: Offset(0, 4),
-            //         ),
-            //       ],
-            //     ),
-            //   ))
-            //       .toList(),
-            //   options: carouselOptions,
-            // ),
-            // Container(
-            //   height: 200,
-            //   width: double.infinity,
-            //   decoration: BoxDecoration(
-            //     color: Colors.white,
-            //     borderRadius: BorderRadius.circular(20),
-            //     boxShadow: [
-            //       BoxShadow(
-            //         color: Colors.black12,
-            //         blurRadius: 20,
-            //         offset: Offset(0, 6),
-            //       ),
-            //     ],
-            //     // image: const DecorationImage(
-            //     //   image: AssetImage("assets/banners/add.png"),
-            //     //   fit: BoxFit.cover,
-            //     // ),
-            //
-            //   ),
-            // ),
 
-
-            Text(
-              "Have a Coupon?",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey[800],
-              ),
-            ),
-
+            const SizedBox(height: 30),
+            Text("Have a Coupon?", style: theme.textTheme.titleMedium),
             const SizedBox(height: 12),
-
             Row(
               children: [
                 Expanded(
@@ -261,8 +200,7 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
                     controller: couponController,
                     decoration: InputDecoration(
                       hintText: "Enter coupon code",
-                      contentPadding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -288,16 +226,13 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
                     ),
                     child: const Text(
                       "Redeem",
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                   ),
                 ),
               ],
             ),
-
             const SizedBox(height: 8),
-
             if (couponMessage.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(left: 4),
@@ -312,12 +247,10 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
               ),
 
             const SizedBox(height: 30),
-
-            // Payment Details Card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: const [
                   BoxShadow(
@@ -329,8 +262,7 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
               ),
               child: Column(
                 children: [
-                  _buildTextField("Card Number", TextInputType.number,
-                      controller: cardNumberController),
+                  _buildTextField("Card Number", TextInputType.number, controller: cardNumberController),
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -368,16 +300,14 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
             ),
 
             const SizedBox(height: 40),
-
             SizedBox(
-              width: double.infinity,
+              width: 300,
               height: 55,
               child: ElevatedButton(
                 onPressed: isLoading ? null : _onPayNow,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
-                  shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   elevation: 10,
                   shadowColor: primaryColor.withOpacity(0.7),
                 ),
@@ -387,8 +317,7 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
                 )
                     : const Text(
                   "Pay Now",
-                  style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ),
@@ -398,76 +327,56 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
     );
   }
 
-  Widget _paymentMethodButton(String method, String assetPath) {
-    bool isSelected = selectedPaymentMethod == method;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedPaymentMethod = method;
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: 168,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? primaryColor : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? primaryColor : Colors.grey.shade300,
-            width: 2,
-          ),
-          boxShadow: isSelected
-              ? [
-            BoxShadow(
-              color: primaryColor.withOpacity(0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-          ]
-              : [],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              assetPath,
-              width: 50,
-              height: 50,
-              // color: isSelected ? Colors.white : null,
-            ),
-            const SizedBox(width: 12),
-          ],
+  Widget _buildTextField(String label, TextInputType type,
+      {required TextEditingController controller,
+        bool obscure = false,
+        Widget? suffixIcon}) {
+    final theme = Theme.of(context);
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      keyboardType: type,
+      decoration: InputDecoration(
+        labelText: label,
+        suffixIcon: suffixIcon,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: AppColors().primary, width: 2),
         ),
       ),
     );
   }
 
-
-  Widget _buildTextField(
-      String label,
-      TextInputType keyboardType, {
-        bool obscure = false,
-        TextEditingController? controller,
-        Widget? suffixIcon,
-      }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscure,
-      decoration: InputDecoration(
-        labelText: label,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+  Widget _paymentMethodButton(String label, String assetPath) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedPaymentMethod = label;
+        });
+      },
+      child: Container(
+        width: 150,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: selectedPaymentMethod == label ? AppColors().primary : theme.cardColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors().primary.withOpacity(0.4)),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: primaryColor, width: 2),
-          borderRadius: BorderRadius.circular(14),
+        child: Column(
+          children: [
+            Image.asset(assetPath, height: 50),
+            const SizedBox(height: 10),
+            Text(
+              label,
+              style: TextStyle(
+                color: selectedPaymentMethod == label ? Colors.white : theme.textTheme.bodyLarge?.color,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
-        suffixIcon: suffixIcon,
       ),
     );
   }

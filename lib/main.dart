@@ -1,3 +1,4 @@
+import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/features/dashboard/views/dashboard_screen.dart';
 import 'package:e_commerce/features/categories/views/categories_list.dart';
@@ -38,10 +39,9 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.orange,
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.orange,
+          backgroundColor: Color(0xFF8D6E63),
           foregroundColor: Colors.white,
         ),
       ),
