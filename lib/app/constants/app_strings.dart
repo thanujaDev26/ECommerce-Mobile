@@ -1,6 +1,6 @@
 class AppStrings {
   // static const appName = "ShopIt";
-  static const welcome = "Welcome back,";
+  static const welcome = "Welcome back, Thanuja";
   static const searchHint = "Search for items...";
   static const topItems = "Top Products";
   static const recommended = "You might also like";

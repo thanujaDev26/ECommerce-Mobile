@@ -12,7 +12,7 @@ import 'package:e_commerce/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(ECommerceMobileAPp());
+    await tester.pumpWidget(ECommerceAppRoot());
 
     expect(find.text('0'), findsOneWidget);
     expect(find.text('1'), findsNothing);
