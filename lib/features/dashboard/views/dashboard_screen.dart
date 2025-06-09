@@ -6,6 +6,7 @@ import 'package:e_commerce/features/dashboard/widgets/banner_carousel.dart';
 import 'package:e_commerce/features/dashboard/widgets/category_list.dart';
 import 'package:e_commerce/features/dashboard/widgets/recommended_items.dart';
 import 'package:e_commerce/features/dashboard/widgets/top_items_grid.dart';
+import 'package:e_commerce/features/notifications/views/noitifications_page.dart';
 import 'package:e_commerce/features/profile/views/profile_page.dart';
 import 'package:e_commerce/features/sidebar/views/sidebar_view.dart';
 import 'package:flutter/material.dart';
@@ -74,9 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         actions: [
           IconButton(
               onPressed: (){
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Notification tapped"))
-                );
+                  Navigator.pushNamed(context, NotificationsPage.routeName, arguments: {"id":1});
               },
               icon: const Icon(Icons.notifications),
           ),

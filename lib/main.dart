@@ -1,4 +1,5 @@
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:e_commerce/features/notifications/views/noitifications_page.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/features/dashboard/views/dashboard_screen.dart';
 import 'package:e_commerce/features/categories/views/categories_list.dart';
@@ -68,6 +69,7 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
         '/beverages': (context) => const Tea(),
         '/foods': (context) => const Tea(),
         '/payment': (context) => const PaymentUiScreen(),
+        '/notifications':(context) => const NotificationsPage(),
       },
       home: DashboardScreen(
         isDarkMode: isDarkMode,
