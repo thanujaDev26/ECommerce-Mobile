@@ -1,5 +1,7 @@
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:e_commerce/features/flash/views/flash_screen.dart';
 import 'package:e_commerce/features/notifications/views/noitifications_page.dart';
+import 'package:e_commerce/features/onboarding/views/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/features/dashboard/views/dashboard_screen.dart';
 import 'package:e_commerce/features/categories/views/categories_list.dart';
@@ -11,13 +13,14 @@ import 'package:e_commerce/features/categories/views/herbal.dart';
 import 'package:e_commerce/features/categories/views/clay_pots.dart';
 import 'package:e_commerce/features/categories/views/tea.dart';
 import 'package:e_commerce/features/payment/views/payment_ui_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async{
   runApp(ECommerceAppRoot());
 }
 
 class ECommerceAppRoot extends StatefulWidget {
-  const ECommerceAppRoot({super.key});
+  const ECommerceAppRoot({super.key,});
 
   @override
   State<ECommerceAppRoot> createState() => _ECommerceAppRootState();
@@ -35,7 +38,6 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'E-Commerce App',
       debugShowCheckedModeBanner: false,
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
@@ -71,10 +73,15 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
         '/payment': (context) => const PaymentUiScreen(),
         '/notifications':(context) => const NotificationsPage(),
       },
-      home: DashboardScreen(
-        isDarkMode: isDarkMode,
-        onThemeChanged: _toggleTheme,
-      ),
+      // home: DashboardScreen(
+      //   isDarkMode: isDarkMode,
+      //   onThemeChanged: _toggleTheme,
+      // ),
+      // home: DashboardScreen(
+      //   isDarkMode: isDarkMode,
+      //   onThemeChanged: _toggleTheme,
+      // ),
+      home: SplashScreen(isDarkMode: isDarkMode, onThemeChanged: _toggleTheme),
     );
   }
 }

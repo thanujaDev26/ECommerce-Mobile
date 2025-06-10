@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AppSidebar extends StatefulWidget {
+class AppSidebar extends StatelessWidget {
   final bool isDarkMode;
   final Function(bool) onThemeChanged;
 
@@ -11,14 +12,11 @@ class AppSidebar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AppSidebar> createState() => _AppSidebarState();
-}
-
-class _AppSidebarState extends State<AppSidebar> {
-  @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Drawer(
-      backgroundColor: widget.isDarkMode ? Colors.grey[900] : Colors.white,
+      backgroundColor: isDarkMode ? Colors.grey[900] : Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -26,24 +24,16 @@ class _AppSidebarState extends State<AppSidebar> {
             DrawerHeader(
               child: Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.orange,
                     child: Icon(Icons.person, size: 30, color: Colors.white),
                   ),
-                  SizedBox(width: 16),
-                  // Text(
-                  //   "Thanuja",
-                  //   style: TextStyle(
-                  //     color: widget.isDarkMode ? Colors.white : Colors.black,
-                  //     fontSize: 18,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // )
+                  const SizedBox(width: 16),
                   RichText(
                     text: TextSpan(
                       style: TextStyle(
-                        color: widget.isDarkMode ? Colors.white : Colors.black,
+                        color: isDarkMode ? Colors.white : Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -63,43 +53,47 @@ class _AppSidebarState extends State<AppSidebar> {
                 ],
               ),
             ),
-            _buildDrawerItem(Icons.help_outline, "FAQ"),
-            _buildDrawerItem(Icons.group, "Community"),
-            _buildDrawerItem(Icons.phone, "Contact Us"),
+            _buildDrawerItem(context, Icons.help_outline, "FAQ", isDarkMode),
+            _buildDrawerItem(context, Icons.group, "Community", isDarkMode),
+            _buildDrawerItem(context, Icons.phone, "Contact Us", isDarkMode),
             SwitchListTile(
               title: Text(
-                widget.isDarkMode ? "Light Mode" : "Dark Mode",
-                style: TextStyle(
-                  color: widget.isDarkMode ? Colors.white : Colors.black,
-                ),
+                isDarkMode ? "Light Mode" : "Dark Mode",
+                style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
               ),
               secondary: Icon(
-                widget.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                color: widget.isDarkMode ? Colors.white : Colors.black,
+                isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                color: isDarkMode ? Colors.white : Colors.black,
               ),
-              value: widget.isDarkMode,
-              onChanged: widget.onThemeChanged,
+              value: isDarkMode,
+              onChanged: (value) {
+                onThemeChanged(value);
+              },
             ),
-            _buildDrawerItem(Icons.settings, "Settings"),
-            Spacer(),
-            Divider(),
-            _buildDrawerItem(Icons.logout, "Logout"),
-            SizedBox(height: 16),
+            _buildDrawerItem(context, Icons.settings, "Settings", isDarkMode),
+            const Spacer(),
+            const Divider(),
+            _buildDrawerItem(context, Icons.logout, "Logout", isDarkMode),
+            const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDrawerItem(IconData icon, String label) {
+  Widget _buildDrawerItem(
+      BuildContext context,
+      IconData icon,
+      String label,
+      bool isDarkMode,
+      ) {
     return ListTile(
-      leading: Icon(icon, color: widget.isDarkMode ? Colors.white : Colors.black),
+      leading: Icon(icon, color: isDarkMode ? Colors.white : Colors.black),
       title: Text(
         label,
-        style: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black),
+        style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
       ),
       onTap: () {
-        // Handle navigation
         Navigator.pop(context);
       },
     );

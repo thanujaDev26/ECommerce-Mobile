@@ -16,10 +16,10 @@ class DashboardScreen extends StatefulWidget {
   final Function(bool) onThemeChanged;
 
   const DashboardScreen({
-    super.key,
+    Key? key,
     required this.isDarkMode,
     required this.onThemeChanged,
-  });
+  }) : super(key: key);
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -61,7 +61,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       key: _scaffoldKey,
       drawer: AppSidebar(
         isDarkMode: widget.isDarkMode,
-        onThemeChanged: widget.onThemeChanged,
+        onThemeChanged: (bool value) {
+          widget.onThemeChanged(value);
+          setState(() {});
+        },
       ),
       onDrawerChanged: (isOpened) {
         if (isOpened) {
