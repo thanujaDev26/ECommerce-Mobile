@@ -10,6 +10,7 @@ import 'package:e_commerce/features/notifications/views/noitifications_page.dart
 import 'package:e_commerce/features/profile/views/profile_page.dart';
 import 'package:e_commerce/features/sidebar/views/sidebar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 
 class DashboardScreen extends StatefulWidget {
   final bool isDarkMode;
@@ -36,11 +37,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ProfilePage(),
   ];
 
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+  void _onTabTapped(int index) async {
+    if (index == 3) {
+      bool authenticated = await _authenticate();
+      if (authenticated) {
+        setState(() {
+          _currentIndex = index;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Authentication failed')),
+        );
+      }
+    } else {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
   }
+
 
   String _getTitle(int index) {
     switch (index) {
@@ -54,6 +69,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return "Home";
     }
   }
+
+  final LocalAuthentication auth = LocalAuthentication();
+
+  Future<bool> _authenticate() async {
+    try {
+      bool canCheckBiometrics = await auth.canCheckBiometrics;
+      bool isDeviceSupported = await auth.isDeviceSupported();
+
+      if (!canCheckBiometrics || !isDeviceSupported) {
+
+        return true;
+      }
+
+      bool didAuthenticate = await auth.authenticate(
+        localizedReason: 'Please authenticate to access your Profile',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
+      );
+      return didAuthenticate;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
