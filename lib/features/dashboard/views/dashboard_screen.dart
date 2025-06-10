@@ -169,7 +169,8 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _greetingAndSearch(context),
+            SizedBox(height: 20,),
+            // _greetingAndSearch(context),
             const SizedBox(height: 10),
             const BannerCarousel(),
             const CategoryList(),
@@ -195,61 +196,61 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _greetingAndSearch(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(
-              "${AppStrings.welcome} 👋",
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Material(
-            elevation: 2,
-            borderRadius: BorderRadius.circular(20),
-            shadowColor: Colors.black12,
-            child: TextField(
-              autofocus: false, // <-- Add this line here
-              decoration: InputDecoration(
-                hintText: AppStrings.searchHint,
-                hintStyle: TextStyle(
-                  color: isDark ? Colors.white60 : Colors.grey,
-                  fontSize: 16,
-                ),
-                prefixIcon: Icon(Icons.search,
-                    color: isDark ? Colors.white70 : Colors.grey),
-                contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                filled: true,
-                fillColor: isDark ? Colors.black : Colors.white,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
-                    color: isDark ? Colors.white : Colors.black,
-                    width: 1.5,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
-                    color: isDark
-                        ? Colors.white
-                        : theme.primaryColor.withOpacity(0.4),
-                    width: 1.5,
-                  ),
-                ),
-              ),
-              style: TextStyle(color: isDark ? Colors.white : Colors.black),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _greetingAndSearch(BuildContext context) {
+  //   final theme = Theme.of(context);
+  //   final isDark = theme.brightness == Brightness.dark;
+  //
+  //   return Padding(
+  //     padding: const EdgeInsets.all(16.0),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Center(
+  //           child: Text(
+  //             "${AppStrings.welcome} 👋",
+  //             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+  //           ),
+  //         ),
+  //         const SizedBox(height: 12),
+  //         Material(
+  //           elevation: 2,
+  //           borderRadius: BorderRadius.circular(20),
+  //           shadowColor: Colors.black12,
+  //           child: TextField(
+  //             autofocus: false, // <-- Add this line here
+  //             decoration: InputDecoration(
+  //               hintText: AppStrings.searchHint,
+  //               hintStyle: TextStyle(
+  //                 color: isDark ? Colors.white60 : Colors.grey,
+  //                 fontSize: 16,
+  //               ),
+  //               prefixIcon: Icon(Icons.search,
+  //                   color: isDark ? Colors.white70 : Colors.grey),
+  //               contentPadding: const EdgeInsets.symmetric(vertical: 14),
+  //               filled: true,
+  //               fillColor: isDark ? Colors.black : Colors.white,
+  //               enabledBorder: OutlineInputBorder(
+  //                 borderRadius: BorderRadius.circular(20),
+  //                 borderSide: BorderSide(
+  //                   color: isDark ? Colors.white : Colors.black,
+  //                   width: 1.5,
+  //                 ),
+  //               ),
+  //               focusedBorder: OutlineInputBorder(
+  //                 borderRadius: BorderRadius.circular(20),
+  //                 borderSide: BorderSide(
+  //                   color: isDark
+  //                       ? Colors.white
+  //                       : theme.primaryColor.withOpacity(0.4),
+  //                   width: 1.5,
+  //                 ),
+  //               ),
+  //             ),
+  //             style: TextStyle(color: isDark ? Colors.white : Colors.black),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
