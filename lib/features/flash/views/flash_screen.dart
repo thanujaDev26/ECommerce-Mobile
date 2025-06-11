@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:e_commerce/features/auth/views/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/features/dashboard/views/dashboard_screen.dart';
 
@@ -40,9 +41,9 @@ class _SplashScreenState extends State<SplashScreen> {
         _timer.cancel();
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => DashboardScreen(
-              isDarkMode: widget.isDarkMode,
-              onThemeChanged: widget.onThemeChanged,
+            builder: (context) => LoginScreen(
+              // isDarkMode: widget.isDarkMode,
+              // onThemeChanged: widget.onThemeChanged,
             ),
           ),
         );
