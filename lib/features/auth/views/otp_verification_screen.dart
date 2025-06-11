@@ -33,7 +33,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       const SnackBar(content: Text('OTP verified successfully')),
     );
 
-    // Navigate to reset password or home screen
+   Navigator.pushNamed(context, "/change-password");
   }
 
   @override

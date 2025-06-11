@@ -99,60 +99,65 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: AppSidebar(
-        isDarkMode: widget.isDarkMode,
-        onThemeChanged: (bool value) {
-          widget.onThemeChanged(value);
-          setState(() {});
-        },
-      ),
-      onDrawerChanged: (isOpened) {
-        if (isOpened) {
-          FocusScope.of(context).unfocus();
-        }
+    return WillPopScope(
+      onWillPop: () async{
+        return false;
       },
-      appBar: AppBar(
-        backgroundColor: AppColors().primary,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(
-              onPressed: (){
-                  Navigator.pushNamed(context, NotificationsPage.routeName, arguments: {"id":1});
-              },
-              icon: const Icon(Icons.notifications),
-          ),
-        ],
-        // leading: IconButton(
-        //   icon: const Icon(Icons.menu),
-        //   onPressed: () {
-        //     FocusScope.of(context).unfocus();
-        //     _scaffoldKey.currentState?.openDrawer();
-        //   },
-        // ),
-      ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.grey,
-        selectedFontSize: 15,
-        unselectedFontSize: 15,
-        selectedIconTheme: const IconThemeData(size: 24),
-        unselectedIconTheme: const IconThemeData(size: 24),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: "Categories"),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Cart"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-        ],
+      child: Scaffold(
+        key: _scaffoldKey,
+        drawer: AppSidebar(
+          isDarkMode: widget.isDarkMode,
+          onThemeChanged: (bool value) {
+            widget.onThemeChanged(value);
+            setState(() {});
+          },
+        ),
+        onDrawerChanged: (isOpened) {
+          if (isOpened) {
+            FocusScope.of(context).unfocus();
+          }
+        },
+        appBar: AppBar(
+          backgroundColor: AppColors().primary,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.white),
+          actions: [
+            IconButton(
+                onPressed: (){
+                    Navigator.pushNamed(context, NotificationsPage.routeName, arguments: {"id":1});
+                },
+                icon: const Icon(Icons.notifications),
+            ),
+          ],
+          // leading: IconButton(
+          //   icon: const Icon(Icons.menu),
+          //   onPressed: () {
+          //     FocusScope.of(context).unfocus();
+          //     _scaffoldKey.currentState?.openDrawer();
+          //   },
+          // ),
+        ),
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _pages,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Colors.grey,
+          selectedFontSize: 15,
+          unselectedFontSize: 15,
+          selectedIconTheme: const IconThemeData(size: 24),
+          unselectedIconTheme: const IconThemeData(size: 24),
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.category), label: "Categories"),
+            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Cart"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          ],
+        ),
       ),
     );
   }
