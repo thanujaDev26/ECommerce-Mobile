@@ -1,4 +1,5 @@
-import 'package:e_commerce/pages/handcrafts/handcraft_model.dart';
+import 'package:e_commerce/features/widgets/models/product_model_to_screen.dart';
+import 'package:e_commerce/features/widgets/similar_products_common_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -8,7 +9,34 @@ class HandcraftProductDetailPage extends StatelessWidget {
 
   const HandcraftProductDetailPage({super.key, required this.product});
 
-  @override
+  List<HandcraftProduct> _getSimilarProducts() {
+    return [
+      HandcraftProduct(
+        id: "101",
+        title: "Traditional Clay Pot Set",
+        price: 2800.00,
+        offerPrice: null,
+        description: "A classic handmade clay pot set.",
+        imageUrls: ["assets/demo_images/traditional_clay_pot.png", "assets/demo_images/beeralu_lace_table_runner.png"],
+        averageRating: 4.6,
+        totalReviews: 95,
+        comments: [],
+      ),
+      HandcraftProduct(
+        id: "102",
+        title: "Beeralu Lace Table Runner",
+        price: 3800.00,
+        offerPrice: 3500.00,
+        description: "Elegant Beeralu lace table runner.",
+        imageUrls: ["assets/demo_images/beeralu_lace_table_runner.png","assets/demo_images/traditional_clay_pot.png"],
+        averageRating: 4.7,
+        totalReviews: 80,
+        comments: [],
+      ),
+      // add more as needed...
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final isOffer = product.offerPrice != null;
@@ -58,6 +86,8 @@ class HandcraftProductDetailPage extends StatelessWidget {
             const Divider(thickness: 1),
             _commentsSection(context),
             const SizedBox(height: 24),
+            SimilarProducts(similarProducts: _getSimilarProducts()),
+            const SizedBox(height: 24,),
           ],
         ),
       ),
@@ -74,7 +104,7 @@ class HandcraftProductDetailPage extends StatelessWidget {
             return Container(
               width: MediaQuery.of(context).size.width,
               margin: const EdgeInsets.symmetric(horizontal: 5.0),
-              child: Image.network(url, fit: BoxFit.cover),
+              child: Image.asset(url, fit: BoxFit.cover),
             );
           },
         );

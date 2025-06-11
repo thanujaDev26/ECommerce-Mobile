@@ -1,5 +1,5 @@
-import 'package:e_commerce/pages/handcrafts/handcraft_model.dart';
-import 'package:e_commerce/pages/handcrafts/templates/handcraft_product_details.dart';
+import 'package:e_commerce/features/widgets/models/product_model_to_screen.dart';
+import 'package:e_commerce/features/widgets/product_details_common_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
