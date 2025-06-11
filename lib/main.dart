@@ -1,4 +1,8 @@
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:e_commerce/features/auth/views/forgot_password_screen.dart';
+import 'package:e_commerce/features/auth/views/login_screen.dart';
+import 'package:e_commerce/features/auth/views/otp_verification_screen.dart';
+import 'package:e_commerce/features/auth/views/register_screen.dart';
 import 'package:e_commerce/features/flash/views/flash_screen.dart';
 import 'package:e_commerce/features/notifications/views/noitifications_page.dart';
 import 'package:e_commerce/features/onboarding/views/onboarding_screen.dart';
@@ -72,6 +76,9 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
         '/foods': (context) => const Tea(),
         '/payment': (context) => const PaymentUiScreen(),
         '/notifications':(context) => const NotificationsPage(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/forgot_password': (context) => const ForgotPasswordScreen(),
       },
       // home: DashboardScreen(
       //   isDarkMode: isDarkMode,
