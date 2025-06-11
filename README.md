@@ -1,6 +1,6 @@
 # 🛍️ ShopIt – Sri Lankan Handcraft E-commerce App
 
-![ShopIt Banner](https://github.com/thanujaDev26/ECommerce-Mobile/blob/main/assets/main_icon.png)
+![ShopIt Banner](https://github.com/thanujaDev26/ECommerce-Mobile/blob/main/assets/main_icon_2.png)
 
 **ShopIt** is a mobile application designed to connect buyers and sellers of authentic Sri Lankan traditional handcrafts from all corners of the island. Whether you’re looking to purchase unique handmade products or showcase your craft to a wider audience, ShopIt is your gateway.
 
