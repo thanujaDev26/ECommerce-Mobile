@@ -1,6 +1,7 @@
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/features/auth/views/forgot_password_screen.dart';
 import 'package:e_commerce/features/auth/views/login_screen.dart';
+import 'package:e_commerce/features/auth/views/otp_verification_screen.dart';
 import 'package:e_commerce/features/auth/views/register_screen.dart';
 import 'package:e_commerce/features/flash/views/flash_screen.dart';
 import 'package:e_commerce/features/notifications/views/noitifications_page.dart';
