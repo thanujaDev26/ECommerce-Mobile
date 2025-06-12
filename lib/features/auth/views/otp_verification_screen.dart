@@ -1,6 +1,12 @@
+import 'dart:convert';
+
+import 'package:e_commerce/features/auth/views/password_changer.dart';
+import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:http/http.dart' as http;
+
 
 class OtpVerificationScreen extends StatefulWidget {
   final String email;
@@ -17,24 +23,58 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   void _verifyOtp() async {
     if (otpCode.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter the full 6-digit OTP')),
+      CustomSnackbar.show(
+        context,
+        message: 'Please enter the full 6-digit OTP',
+        backgroundColor: Colors.red,
+        icon: Icons.error,
       );
       return;
     }
-
     setState(() => isVerifying = true);
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() => isVerifying = false);
+    try {
+      final response = await http.post(
+        Uri.parse('http://192.168.1.104:3001/api/v1/otp/verify'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': widget.email,
+          'otp': otpCode,
+        }),
+      );
 
-    // TODO: Implement actual OTP verification logic
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('OTP verified successfully')),
-    );
-
-   Navigator.pushNamed(context, "/change-password");
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PasswordChanger(
+              email: widget.email,
+              otp: otpCode,
+            ),
+          ),
+        );
+      } else {
+        CustomSnackbar.show(
+          context,
+          message: 'OTP Verification failed',
+          backgroundColor: Colors.red,
+          icon: Icons.error,
+        );
+      }
+    } catch (e) {
+      debugPrint('OTP Verification Error: $e');
+      CustomSnackbar.show(
+        context,
+        message: 'Error: ${e}',
+        backgroundColor: Colors.red,
+        icon: Icons.error,
+      );
+    } finally {
+      setState(() => isVerifying = false);
+    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {

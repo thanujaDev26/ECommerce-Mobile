@@ -16,7 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isLoading = false;
 
   Future<void> _registerUser() async {
-    final url = Uri.parse('http://172.20.10.3:3001/api/v1/auth/register');
+    final url = Uri.parse('http://192.168.1.104:3001/api/v1/auth/register');
     final body = {
       "fName": firstNameController.text,
       "lName": lastNameController.text,
