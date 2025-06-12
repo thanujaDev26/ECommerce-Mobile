@@ -7,6 +7,8 @@ import 'package:e_commerce/features/auth/views/register_screen.dart';
 import 'package:e_commerce/features/flash/views/flash_screen.dart';
 import 'package:e_commerce/features/notifications/views/noitifications_page.dart';
 import 'package:e_commerce/features/onboarding/views/onboarding_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/features/dashboard/views/dashboard_screen.dart';
 import 'package:e_commerce/features/categories/views/categories_list.dart';
@@ -21,7 +23,11 @@ import 'package:e_commerce/features/payment/views/payment_ui_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  String? fcmToken = await FirebaseMessaging.instance.getToken();
   runApp(ECommerceAppRoot());
+  print("FCM Token: $fcmToken");
 }
 
 class ECommerceAppRoot extends StatefulWidget {
