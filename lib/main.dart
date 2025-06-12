@@ -23,11 +23,7 @@ import 'package:e_commerce/features/payment/views/payment_ui_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  String? fcmToken = await FirebaseMessaging.instance.getToken();
   runApp(ECommerceAppRoot());
-  print("FCM Token: $fcmToken");
 }
 
 class ECommerceAppRoot extends StatefulWidget {
