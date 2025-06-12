@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:e_commerce/features/auth/views/otp_verification_screen.dart';
+import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:http/http.dart' as http;
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -16,29 +20,56 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   void _sendOtp() async {
     final email = emailController.text.trim();
     if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your email')),
+      CustomSnackbar.show(
+        context,
+        message: 'Please enter your email',
+        backgroundColor: Colors.red,
+        icon: Icons.check_circle,
       );
-      // if(email.isNotEmpty){
-      //   Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpVerificationScreen(email: email),));
-      // }
 
       return;
     }
 
     setState(() => isLoading = true);
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() => isLoading = false);
 
-    // TODO: Implement actual OTP sending logic
+    try {
+      final response = await http.post(
+        Uri.parse('http://192.168.1.104:3001/api/v1/otp/send'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({"email": email}),
+      );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('OTP sent to $email')),
-    );
+      setState(() => isLoading = false);
 
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpVerificationScreen(email: email),));
-
-    // Optionally, navigate to OTP verification screen
+      if (response.statusCode == 200) {
+        CustomSnackbar.show(
+          context,
+          message: "The OTP has been sent to your email",
+          backgroundColor: Colors.green,
+          icon: Icons.check_circle,
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => OtpVerificationScreen(email: email)),
+        );
+      } else {
+        final data = jsonDecode(response.body);
+        CustomSnackbar.show(
+          context,
+          message: data['message'],
+          backgroundColor: Colors.red,
+          icon: Icons.check_circle,
+        );
+      }
+    } catch (e) {
+      setState(() => isLoading = false);
+      CustomSnackbar.show(
+        context,
+        message: 'Error sending OTP. Please try again later.',
+        backgroundColor: Colors.red,
+        icon: Icons.check_circle,
+      );
+    }
   }
 
   @override
