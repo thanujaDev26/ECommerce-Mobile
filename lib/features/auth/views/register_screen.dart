@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
@@ -12,6 +13,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  bool isLoading = false;
 
   Future<void> _registerUser() async {
     final url = Uri.parse('http://172.20.10.3:3001/api/v1/auth/register');
@@ -41,14 +43,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final data = jsonDecode(response.body);
       print(data);
       if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'])),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text(data['message'])),
+        // );
+        CustomSnackbar.show(
+          context,
+          message: data['message'],
+          backgroundColor: Colors.green,
+          icon: Icons.check_circle,
         );
+        setState(() => isLoading = false);
+        Navigator.pushReplacementNamed(context, '/login');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'] ?? 'Registration failed')),
+        setState(() => isLoading = false);
+        CustomSnackbar.show(
+          context,
+          message: data['message'],
+          backgroundColor: Colors.red,
+          icon: Icons.check_circle,
         );
-      }
+      };
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -296,9 +310,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(
                     width: double.infinity,
                     height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
+                    child: isLoading
+                        ? const Center(child: CircularProgressIndicator(color: Colors.white))
+                        : ElevatedButton(
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
+                          setState(() => isLoading = true);
+                          await Future.delayed(const Duration(seconds: 3));
                           _registerUser();
                         }
                       },
@@ -308,7 +326,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      child: const Text('Register', style: TextStyle(fontSize: 18,color: Colors.white),),
+                      child: const Text('Register', style: TextStyle(fontSize: 18,color: Colors.white)),
                     ),
                   ),
                 ],
