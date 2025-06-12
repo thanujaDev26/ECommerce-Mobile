@@ -73,7 +73,15 @@ class AppSidebar extends StatelessWidget {
             _buildDrawerItem(context, Icons.settings, "Settings", isDarkMode),
             const Spacer(),
             const Divider(),
-            _buildDrawerItem(context, Icons.logout, "Logout", isDarkMode),
+            _buildDrawerItem(
+              context,
+              Icons.logout,
+              "Logout",
+              isDarkMode,
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+            ),
             const SizedBox(height: 16),
           ],
         ),
@@ -85,15 +93,16 @@ class AppSidebar extends StatelessWidget {
       BuildContext context,
       IconData icon,
       String label,
-      bool isDarkMode,
-      ) {
+      bool isDarkMode, {
+        VoidCallback? onTap,
+      }) {
     return ListTile(
       leading: Icon(icon, color: isDarkMode ? Colors.white : Colors.black),
       title: Text(
         label,
         style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
       ),
-      onTap: () {
+      onTap: onTap ?? () {
         Navigator.pop(context);
       },
     );

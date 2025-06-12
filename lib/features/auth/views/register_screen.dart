@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -10,6 +12,52 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+
+  Future<void> _registerUser() async {
+    final url = Uri.parse('http://172.20.10.3:3001/api/v1/auth/register');
+
+    final body = {
+      "fName": firstNameController.text,
+      "lName": lastNameController.text,
+      "email": emailController.text,
+      "password": passwordController.text,
+      "confirmPassword": confirmPasswordController.text,
+      "mobile": mobileController.text,
+      "address_line": address1Controller.text,
+      "city": cityController.text,
+      "district": selectedDistrict,
+      "province": selectedProvince,
+      "postalCode": postalCodeController.text,
+      "sex": gender,
+      "birthday": birthday != null ? DateFormat('yyyy-MM-dd').format(birthday!) : null,
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'])),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'Registration failed')),
+        );
+      }
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Something went wrong. Please try again.')),
+      );
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   final firstNameController = TextEditingController();
@@ -19,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final confirmPasswordController = TextEditingController();
   final mobileController = TextEditingController();
   final address1Controller = TextEditingController();
-  final address2Controller = TextEditingController();
+  // final address2Controller = TextEditingController();
   final cityController = TextEditingController();
   final postalCodeController = TextEditingController();
 
@@ -182,10 +230,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     validator: (v) => v!.isEmpty ? 'Required' : null,
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: address2Controller,
-                    decoration: _inputDecoration('Address Line 2 (Optional)'),
-                  ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: cityController,
@@ -256,10 +300,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Submitting registration')),
-                          );
-                          // TODO: Implement your registration logic
+                          _registerUser();
                         }
                       },
                       style: ElevatedButton.styleFrom(

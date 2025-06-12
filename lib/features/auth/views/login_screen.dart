@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:flutter_signin_button/button_builder.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,14 +19,74 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isLoading = false;
-  bool isPasswordVisible = false;  // For password eye toggle
+  bool isPasswordVisible = false;
+
+  // void _loginUser() async {
+  //   setState(() => isLoading = true);
+  //   await Future.delayed(const Duration(seconds: 2));
+  //   setState(() => isLoading = false);
+  //   Navigator.pushReplacementNamed(context, '/home');
+  // }
+
+
+  Future<void> _storeToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('authToken', token);
+  }
+
+  
 
   void _loginUser() async {
     setState(() => isLoading = true);
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() => isLoading = false);
-    Navigator.pushReplacementNamed(context, '/home');
+
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty){
+      _showErrorDialog("Email or Password is Required");
+    }
+    // final url = Uri.parse('10.30.100.195:3001/api/v1/auth/login');
+    final url = Uri.parse('http://172.20.10.3:3001/api/v1/auth/login');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        await _storeToken(data['token']);
+        print(data);
+        setState(() => isLoading = false);
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        final error = jsonDecode(response.body)['message'] ?? 'Login failed';
+        setState(() => isLoading = false);
+        _showErrorDialog(error);
+      }
+    } catch (e) {
+      setState(() => isLoading = false);
+      _showErrorDialog('An error occurred. Please try again.');
+    }
   }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Login Failed'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Okay'),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   void _loginWithGoogle() {
     // TODO: Implement Google login logic here
