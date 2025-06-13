@@ -14,11 +14,11 @@ import 'package:e_commerce/features/dashboard/views/dashboard_screen.dart';
 import 'package:e_commerce/features/categories/views/categories_list.dart';
 import 'package:e_commerce/features/cart/views/cart_page.dart';
 import 'package:e_commerce/features/profile/views/profile_page.dart';
-import 'package:e_commerce/features/categories/views/handcrafts.dart';
-import 'package:e_commerce/features/categories/views/spices.dart';
-import 'package:e_commerce/features/categories/views/herbal.dart';
-import 'package:e_commerce/features/categories/views/clay_pots.dart';
-import 'package:e_commerce/features/categories/views/tea.dart';
+import 'package:e_commerce/features/categories/catgories_pages/handcrafts.dart';
+import 'package:e_commerce/features/categories/catgories_pages/spices.dart';
+import 'package:e_commerce/features/categories/catgories_pages/herbal.dart';
+import 'package:e_commerce/features/categories/catgories_pages/clay_pots.dart';
+import 'package:e_commerce/features/categories/catgories_pages/tea.dart';
 import 'package:e_commerce/features/payment/views/payment_ui_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
