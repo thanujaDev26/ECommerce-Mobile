@@ -84,14 +84,6 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
         '/forgot_password': (context) => const ForgotPasswordScreen(),
         '/change-password':(context) => const PasswordChanger(email: "", otp: ""),
       },
-      // home: DashboardScreen(
-      //   isDarkMode: isDarkMode,
-      //   onThemeChanged: _toggleTheme,
-      // ),
-      // home: DashboardScreen(
-      //   isDarkMode: isDarkMode,
-      //   onThemeChanged: _toggleTheme,
-      // ),
       home: SplashScreen(isDarkMode: isDarkMode, onThemeChanged: _toggleTheme),
     );
   }

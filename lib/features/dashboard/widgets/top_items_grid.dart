@@ -22,9 +22,9 @@ class _TopItemsGridState extends State<TopItemsGrid> {
     super.initState();
     _loadProducts();
 
-    // _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-    //   _loadProducts();
-    // });
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      _loadProducts();
+    });
   }
 
   void _loadProducts() {
