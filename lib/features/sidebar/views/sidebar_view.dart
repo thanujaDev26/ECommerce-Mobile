@@ -1,7 +1,10 @@
+import 'package:e_commerce/features/dashboard/services/user_service.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AppSidebar extends StatelessWidget {
+class AppSidebar extends StatefulWidget {
   final bool isDarkMode;
   final Function(bool) onThemeChanged;
 
@@ -10,6 +13,60 @@ class AppSidebar extends StatelessWidget {
     required this.isDarkMode,
     required this.onThemeChanged,
   }) : super(key: key);
+
+  @override
+  State<AppSidebar> createState() => _AppSidebarState();
+}
+
+class _AppSidebarState extends State<AppSidebar> {
+  late bool _currentDarkMode;
+  String? _token;
+  UserProfile? userProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentDarkMode = widget.isDarkMode;
+    _loadToken();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _token = prefs.getString('authToken');
+    });
+    debugPrint("JWT Token: $_token");
+  }
+
+  Future<void> _loadUserProfile() async {
+    final model = await UserService.fetchUser();
+    if (model != null) {
+      final fullName = model.name.trim();
+      final nameParts = fullName.split(' ');
+      final firstName = nameParts.isNotEmpty ? nameParts[0] : '';
+      final lastName = nameParts.length > 1
+          ? nameParts.sublist(1).join(' ')
+          : '';
+      setState(() {
+        userProfile = UserProfile.fromUserModel(model);
+      });
+    }
+  }
+
+  String _getFirstName(String fullName) {
+    final parts = fullName.trim().split(' ');
+    return parts.isNotEmpty ? parts[0] : '';
+  }
+
+  String _getLastName(String fullName) {
+    final parts = fullName.trim().split(' ');
+    if (parts.length > 1) {
+      return parts.sublist(1).join(' ');
+    }
+    return '';
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +87,7 @@ class AppSidebar extends StatelessWidget {
                     child: Icon(Icons.person, size: 30, color: Colors.white),
                   ),
                   const SizedBox(width: 16),
+                  userProfile == null ? const CircularProgressIndicator() :
                   RichText(
                     text: TextSpan(
                       style: TextStyle(
@@ -37,10 +95,10 @@ class AppSidebar extends StatelessWidget {
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
-                      children: const [
-                        TextSpan(text: 'Thanuja\n'),
+                      children: [
+                        TextSpan(text: _getFirstName(userProfile!.name) + '\n'),
                         TextSpan(
-                          text: 'Priyadarshane',
+                          text: _getLastName(userProfile!.name),
                           style: TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 16,
@@ -58,16 +116,19 @@ class AppSidebar extends StatelessWidget {
             _buildDrawerItem(context, Icons.phone, "Contact Us", isDarkMode),
             SwitchListTile(
               title: Text(
-                isDarkMode ? "Light Mode" : "Dark Mode",
+                _currentDarkMode ? "Light Mode" : "Dark Mode",
                 style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
               ),
               secondary: Icon(
-                isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                _currentDarkMode ? Icons.light_mode : Icons.dark_mode,
                 color: isDarkMode ? Colors.white : Colors.black,
               ),
-              value: isDarkMode,
+              value: _currentDarkMode,
               onChanged: (value) {
-                onThemeChanged(value);
+                setState(() {
+                  _currentDarkMode = value;
+                });
+                widget.onThemeChanged(value);
               },
             ),
             _buildDrawerItem(context, Icons.settings, "Settings", isDarkMode),
@@ -78,8 +139,10 @@ class AppSidebar extends StatelessWidget {
               Icons.logout,
               "Logout",
               isDarkMode,
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/login');
+              onTap: () async{
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('authToken');
+                Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
               },
             ),
             const SizedBox(height: 16),
