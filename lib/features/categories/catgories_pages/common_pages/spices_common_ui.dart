@@ -1,15 +1,15 @@
-import 'package:e_commerce/features/categories/catgories_pages/models/herbal_model.dart';
-import 'package:e_commerce/features/categories/catgories_pages/similar_pages/similar_herbal_products.dart';
+import 'package:e_commerce/features/categories/catgories_pages/models/spices_model.dart';
+import 'package:e_commerce/features/categories/catgories_pages/similar_pages/similar_spices_products_suggessions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
 
 
-class HerbalCommonUi extends StatelessWidget {
-  final HerbalModel product;
-  final List<HerbalModel> allProducts;
+class SpicesCommonUi extends StatelessWidget {
+  final SpicesModel product;
+  final List<SpicesModel> allProducts;
 
-  const HerbalCommonUi({super.key, required this.product, required this.allProducts});
+  const SpicesCommonUi({super.key, required this.product, required this.allProducts});
 
   @override
   Widget build(BuildContext context) {
@@ -75,13 +75,11 @@ class HerbalCommonUi extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Circle Avatar Placeholder (Initial or Icon)
                             CircleAvatar(
                               backgroundColor: AppColors().primary.withOpacity(0.1),
                               child: const Icon(Icons.person, color: Colors.grey),
                             ),
                             const SizedBox(width: 12),
-                            // Review Details
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +111,7 @@ class HerbalCommonUi extends StatelessWidget {
                     );
                   }).toList(),
                 ],
-                SimilarHerbalProducts(currentProduct: product, allProducts: allProducts,),
+                SimilarSpicesProductsSuggessions(currentProduct: product, allProducts: allProducts,),
               ],
             ),
           ),
