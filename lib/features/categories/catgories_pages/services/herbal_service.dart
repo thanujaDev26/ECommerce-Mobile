@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:e_commerce/features/categories/catgories_pages/models/herbal_model.dart';
 import 'package:http/http.dart' as http;
 
-class HandcraftService {
+class HerbalService {
   static const String _baseUrl = 'http://192.168.1.104:3001';
 
   static Future<List<HerbalModel>> fetchProducts() async {
