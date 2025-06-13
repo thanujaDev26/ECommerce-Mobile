@@ -1,6 +1,6 @@
 import 'package:e_commerce/features/dashboard/viewmodels/rating_model.dart';
 
-class HandcraftProduct {
+class HandcraftModel {
   final String id;
   final String? title;
   final String? description;
@@ -14,7 +14,7 @@ class HandcraftProduct {
   final List<Rating>? ratings;
   final List<String>? tags;
 
-  HandcraftProduct({
+  HandcraftModel({
     required this.id,
     this.title,
     this.description,
@@ -28,9 +28,9 @@ class HandcraftProduct {
     this.ratings = const [],
     required this.tags,
   });
-  
-  factory HandcraftProduct.fromJson(Map<String, dynamic> json) {
-    return HandcraftProduct(
+
+  factory HandcraftModel.fromJson(Map<String, dynamic> json) {
+    return HandcraftModel(
       id: json['id'],
       title: json['productName'],
       description: json['description'],
