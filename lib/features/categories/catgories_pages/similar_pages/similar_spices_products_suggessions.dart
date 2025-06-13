@@ -1,19 +1,19 @@
-import 'package:e_commerce/features/categories/catgories_pages/common_pages/handcraft_common_ui.dart';
-import 'package:e_commerce/features/categories/catgories_pages/models/handcraft_model.dart';
+import 'package:e_commerce/features/categories/catgories_pages/common_pages/spices_common_ui.dart';
+import 'package:e_commerce/features/categories/catgories_pages/models/spices_model.dart';
 import 'package:flutter/material.dart';
 
 
-class SimilarHandcraftProductsSuggession extends StatelessWidget {
-  final HandcraftModel currentProduct;
-  final List<HandcraftModel> allProducts;
+class SimilarSpicesProductsSuggessions extends StatelessWidget {
+  final SpicesModel currentProduct;
+  final List<SpicesModel> allProducts;
 
-  const SimilarHandcraftProductsSuggession({
+  const SimilarSpicesProductsSuggessions({
     super.key,
     required this.currentProduct,
     required this.allProducts,
   });
 
-  List<HandcraftModel> getSimilarProducts() {
+  List<SpicesModel> getSimilarProducts() {
     final currentTags = currentProduct.tags ?? [];
     return allProducts
         .where((p) =>
@@ -51,7 +51,7 @@ class SimilarHandcraftProductsSuggession extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => HandcraftCommonUi(product: product, allProducts: allProducts,),
+                      builder: (_) => SpicesCommonUi(product: product, allProducts: allProducts,),
                     ),
                   );
                 },
