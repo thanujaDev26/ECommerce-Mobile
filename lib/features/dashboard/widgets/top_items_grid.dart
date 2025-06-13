@@ -76,7 +76,7 @@ class _TopItemsGridState extends State<TopItemsGrid> {
                   context,
                   MaterialPageRoute(
                     builder: (_) =>
-                        HandcraftProductDetailPage(product: product),
+                        HandcraftProductDetailPage(product: product, allProducts: products,),
                   ),
                 );
               },
@@ -99,7 +99,7 @@ class _TopItemsGridState extends State<TopItemsGrid> {
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
                       child: Image.network(
                         product.primaryImageUrl,
-                        height: 150,
+                        height: 120,
                         width: double.infinity,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => const Icon(Icons.image),
@@ -131,7 +131,7 @@ class _TopItemsGridState extends State<TopItemsGrid> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "\$${product.price}",
+                        "LKR ${product.price}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
