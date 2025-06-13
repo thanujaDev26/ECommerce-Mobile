@@ -2,6 +2,8 @@ import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/app/constants/app_strings.dart';
 import 'package:e_commerce/features/cart/views/cart_page.dart';
 import 'package:e_commerce/features/categories/views/categories_list.dart';
+import 'package:e_commerce/features/dashboard/services/user_service.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/user_profile.dart';
 import 'package:e_commerce/features/dashboard/widgets/banner_carousel.dart';
 import 'package:e_commerce/features/dashboard/widgets/category_list.dart';
 import 'package:e_commerce/features/dashboard/widgets/recommended_items.dart';
@@ -11,10 +13,12 @@ import 'package:e_commerce/features/profile/views/profile_page.dart';
 import 'package:e_commerce/features/sidebar/views/sidebar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
   final bool isDarkMode;
   final Function(bool) onThemeChanged;
+
 
   const DashboardScreen({
     Key? key,
@@ -27,15 +31,43 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  String? _token;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  UserProfile? userProfile;
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    HomePage(),
-    CategoriesList(),
-    CartPage(),
-    ProfilePage(),
-  ];
+  // final List<Widget> _pages = [
+  //   HomePage(userProfile: userProfile,),
+  //   CategoriesList(),
+  //   CartPage(),
+  //   ProfilePage(),
+  // ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToken();
+    _loadUserProfile();
+
+  }
+
+  Future<void> _loadUserProfile() async {
+    final model = await UserService.fetchUser();
+    if (model != null) {
+      setState(() {
+        userProfile = UserProfile.fromUserModel(model);
+      });
+    }
+  }
+
+  Future<void> _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _token = prefs.getString('authToken');
+    });
+    debugPrint("JWT Token: $_token");
+  }
 
   void _onTabTapped(int index) async {
     if (index == 3) {
@@ -99,6 +131,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_currentIndex == 0 && userProfile == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text("Home")),
+        body: const Center(child: Text("Failed to load user profile")),
+      );
+    }
+    final List<Widget> pages = [
+      HomePage(userProfile: userProfile),
+      const CategoriesList(),
+      const CartPage(),
+      const ProfilePage(),
+    ];
     return WillPopScope(
       onWillPop: () async{
         return false;
@@ -139,7 +183,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         body: IndexedStack(
           index: _currentIndex,
-          children: _pages,
+          children: pages,
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
@@ -164,7 +208,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final UserProfile? userProfile;
+  const HomePage({super.key, required this.userProfile});
 
   @override
   Widget build(BuildContext context) {
@@ -194,68 +239,11 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            const RecommendedItems(),
+            RecommendedItems(user: userProfile!,),
           ],
         ),
       ),
     );
   }
 
-  // Widget _greetingAndSearch(BuildContext context) {
-  //   final theme = Theme.of(context);
-  //   final isDark = theme.brightness == Brightness.dark;
-  //
-  //   return Padding(
-  //     padding: const EdgeInsets.all(16.0),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Center(
-  //           child: Text(
-  //             "${AppStrings.welcome} 👋",
-  //             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-  //           ),
-  //         ),
-  //         const SizedBox(height: 12),
-  //         Material(
-  //           elevation: 2,
-  //           borderRadius: BorderRadius.circular(20),
-  //           shadowColor: Colors.black12,
-  //           child: TextField(
-  //             autofocus: false, // <-- Add this line here
-  //             decoration: InputDecoration(
-  //               hintText: AppStrings.searchHint,
-  //               hintStyle: TextStyle(
-  //                 color: isDark ? Colors.white60 : Colors.grey,
-  //                 fontSize: 16,
-  //               ),
-  //               prefixIcon: Icon(Icons.search,
-  //                   color: isDark ? Colors.white70 : Colors.grey),
-  //               contentPadding: const EdgeInsets.symmetric(vertical: 14),
-  //               filled: true,
-  //               fillColor: isDark ? Colors.black : Colors.white,
-  //               enabledBorder: OutlineInputBorder(
-  //                 borderRadius: BorderRadius.circular(20),
-  //                 borderSide: BorderSide(
-  //                   color: isDark ? Colors.white : Colors.black,
-  //                   width: 1.5,
-  //                 ),
-  //               ),
-  //               focusedBorder: OutlineInputBorder(
-  //                 borderRadius: BorderRadius.circular(20),
-  //                 borderSide: BorderSide(
-  //                   color: isDark
-  //                       ? Colors.white
-  //                       : theme.primaryColor.withOpacity(0.4),
-  //                   width: 1.5,
-  //                 ),
-  //               ),
-  //             ),
-  //             style: TextStyle(color: isDark ? Colors.white : Colors.black),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
