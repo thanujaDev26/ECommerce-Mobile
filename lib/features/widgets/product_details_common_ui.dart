@@ -5,7 +5,7 @@ import 'package:e_commerce/features/widgets/comment_section_common_ui.dart';
 import 'package:e_commerce/features/widgets/similar_products_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:e_commerce/features/dashboard/viewmodels/top_handcraft_product.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 
 class HandcraftProductDetailPage extends StatefulWidget {
   final HandcraftProduct product;

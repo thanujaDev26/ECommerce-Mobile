@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:e_commerce/app/constants/app_colors.dart';
-import 'package:e_commerce/features/dashboard/services/top_product_service.dart';
-import 'package:e_commerce/features/dashboard/viewmodels/top_handcraft_product.dart';
+import 'package:e_commerce/features/dashboard/services/handcraft_service.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 import 'package:e_commerce/features/widgets/product_details_common_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';

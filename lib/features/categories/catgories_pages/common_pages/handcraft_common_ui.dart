@@ -4,7 +4,7 @@ import 'package:e_commerce/features/widgets/similar_products_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
-import 'package:e_commerce/features/dashboard/viewmodels/top_handcraft_product.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 
 class HandcraftCommonUi extends StatelessWidget {
   final HandcraftModel product;
