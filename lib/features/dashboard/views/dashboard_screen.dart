@@ -8,11 +8,13 @@ import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 import 'package:e_commerce/features/dashboard/viewmodels/user_profile.dart';
 import 'package:e_commerce/features/dashboard/widgets/banner_carousel.dart';
 import 'package:e_commerce/features/dashboard/widgets/category_list.dart';
+import 'package:e_commerce/features/dashboard/widgets/dashboard_search_bar.dart';
 import 'package:e_commerce/features/dashboard/widgets/recommended_items.dart';
 import 'package:e_commerce/features/dashboard/widgets/top_items_grid.dart';
 import 'package:e_commerce/features/notifications/views/noitifications_page.dart';
 import 'package:e_commerce/features/profile/views/profile_page.dart';
 import 'package:e_commerce/features/sidebar/views/sidebar_view.dart';
+import 'package:e_commerce/features/widgets/product_details_common_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -159,6 +161,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return false;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         key: _scaffoldKey,
         drawer: AppSidebar(
           isDarkMode: widget.isDarkMode,
@@ -170,6 +173,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onDrawerChanged: (isOpened) {
           if (isOpened) {
             FocusScope.of(context).unfocus();
+            FocusManager.instance.primaryFocus?.unfocus();
           }
         },
         appBar: AppBar(
@@ -184,13 +188,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 icon: const Icon(Icons.notifications),
             ),
           ],
-          // leading: IconButton(
-          //   icon: const Icon(Icons.menu),
-          //   onPressed: () {
-          //     FocusScope.of(context).unfocus();
-          //     _scaffoldKey.currentState?.openDrawer();
-          //   },
-          // ),
         ),
         body: IndexedStack(
           index: _currentIndex,
@@ -243,6 +240,20 @@ class HomePage extends StatelessWidget {
             SizedBox(height: 20,),
             // _greetingAndSearch(context),
             const SizedBox(height: 10),
+            DashboardSearchBar(
+              allProducts: allProducts,
+              onProductSelected: (HandcraftProduct product) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HandcraftProductDetailPage(
+                      product: product,
+                      allProducts: allProducts,
+                    ),
+                  ),
+                );
+              },
+            ),
             const BannerCarousel(),
             const CategoryList(),
             const Padding(
