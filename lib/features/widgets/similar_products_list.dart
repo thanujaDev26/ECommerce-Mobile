@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:e_commerce/features/dashboard/viewmodels/top_handcraft_product.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 import 'package:e_commerce/features/widgets/product_details_common_ui.dart';
 
 class SimilarProductsList extends StatelessWidget {

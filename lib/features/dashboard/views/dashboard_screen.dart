@@ -2,7 +2,9 @@ import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/app/constants/app_strings.dart';
 import 'package:e_commerce/features/cart/views/cart_page.dart';
 import 'package:e_commerce/features/categories/views/categories_list.dart';
+import 'package:e_commerce/features/dashboard/services/handcraft_service.dart';
 import 'package:e_commerce/features/dashboard/services/user_service.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 import 'package:e_commerce/features/dashboard/viewmodels/user_profile.dart';
 import 'package:e_commerce/features/dashboard/widgets/banner_carousel.dart';
 import 'package:e_commerce/features/dashboard/widgets/category_list.dart';
@@ -31,6 +33,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  List<HandcraftProduct> allProducts = [];
   String? _token;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -49,7 +52,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     _loadToken();
     _loadUserProfile();
+    _loadAllProducts();
 
+  }
+
+  Future<void> _loadAllProducts() async {
+    final products = await ProductService.fetchProducts();
+    setState(() {
+      allProducts = products;
+    });
   }
 
   Future<void> _loadUserProfile() async {
@@ -138,7 +149,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
     }
     final List<Widget> pages = [
-      HomePage(userProfile: userProfile),
+      HomePage(userProfile: userProfile,allProducts: allProducts,),
       const CategoriesList(),
       const CartPage(),
       const ProfilePage(),
@@ -209,10 +220,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 class HomePage extends StatelessWidget {
   final UserProfile? userProfile;
-  const HomePage({super.key, required this.userProfile});
+  final List<HandcraftProduct> allProducts;
+  const HomePage({
+    Key? key,
+    required this.userProfile,
+    required this.allProducts,
+  }): super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if(userProfile == null){
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: SingleChildScrollView(
@@ -239,7 +260,10 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            RecommendedItems(user: userProfile!,),
+            RecommendedItems(
+              user: userProfile!,
+              allProducts: allProducts,
+            ),
           ],
         ),
       ),

@@ -3,7 +3,7 @@ import 'package:e_commerce/features/categories/catgories_pages/common_pages/herb
 import 'package:e_commerce/features/categories/catgories_pages/models/handcraft_model.dart';
 import 'package:e_commerce/features/categories/catgories_pages/models/herbal_model.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce/features/dashboard/viewmodels/top_handcraft_product.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 import 'package:e_commerce/features/widgets/product_details_common_ui.dart';
 
 class SimilarHerbalProducts extends StatelessWidget {

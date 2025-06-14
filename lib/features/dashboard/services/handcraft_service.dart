@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:e_commerce/features/dashboard/viewmodels/top_handcraft_product.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 
 class ProductService {
   static const String _baseUrl = 'http://192.168.1.104:3001';
