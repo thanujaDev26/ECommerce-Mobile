@@ -28,7 +28,7 @@ class HandcraftProduct {
     this.ratings = const [],
     required this.tags,
   });
-  
+
   factory HandcraftProduct.fromJson(Map<String, dynamic> json) {
     return HandcraftProduct(
       id: json['id'],
