@@ -4,6 +4,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/features/dashboard/viewmodels/top_handcraft_product.dart';
 
+
+
 class HandcraftProductDetailPage extends StatelessWidget {
   final HandcraftProduct product;
   final List<HandcraftProduct> allProducts;
