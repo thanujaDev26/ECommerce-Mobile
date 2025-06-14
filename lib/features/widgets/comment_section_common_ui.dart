@@ -4,6 +4,7 @@ import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductCommentBox extends StatefulWidget {
   final String productId;
@@ -23,7 +24,10 @@ class _ProductCommentBoxState extends State<ProductCommentBox> {
   final TextEditingController _commentController = TextEditingController();
   double _userRating = 3.0;
 
+
+
   Future<void> _submitRating() async {
+
     final reviewText = _commentController.text.trim();
 
     if (reviewText.isEmpty) {
@@ -36,15 +40,31 @@ class _ProductCommentBoxState extends State<ProductCommentBox> {
       return;
     }
 
-    final userId = "mock-user-id";
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('authToken');
+
+    if (token == null) {
+      CustomSnackbar.show(
+        context,
+        message: "You must be logged in to submit a review.",
+        backgroundColor: Colors.red,
+        icon: Icons.lock,
+      );
+      return;
+    }
+
+
+    // final userId = "mock-user-id";
 
     final response = await http.post(
-      Uri.parse('https://your-api-url.com/api/ratings/${widget.productId}'),
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('http://192.168.1.104:3001/api/v1/ratings/products/${widget.productId}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
       body: jsonEncode({
         "rating": _userRating,
         "review": reviewText,
-        "userId": userId,
       }),
     );
 
