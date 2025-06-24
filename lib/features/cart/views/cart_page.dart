@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:e_commerce/features/cart/cart_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CartPage extends StatefulWidget {
@@ -9,56 +13,53 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  final List<Map<String, dynamic>> cartItems = [
-    {
-      "name": "Handcrafted Vase",
-      "image": "assets/categories/handcrafts.png",
-      "price": 1200,
-      "quantity": 1
-    },
-    {
-      "name": "Organic Spices Pack",
-      "image": "assets/categories/spices.png",
-      "price": 800,
-      "quantity": 2
-    },
-  ];
+  List<CartItem> cartItems = [];
+  bool isLoading = true;
 
-  int get totalPrice => cartItems.fold<int>(
-    0,
-        (sum, item) => sum + (item['price'] as int) * (item['quantity'] as int),
-  );
+  double get subTotal => cartItems.fold(0.0, (sum, item) => sum + item.total);
+  double get deliveryFee => cartItems.isEmpty ? 0.0 : 500.0;
+  double get discount => cartItems.fold(0.0, (sum, item) => sum + (item.discount * item.quantity));
+  double get grandTotal => subTotal + deliveryFee;
 
-  void updateQuantity(int index, bool increment) {
-    setState(() {
-      if (increment) {
-        cartItems[index]['quantity']++;
-      } else if (cartItems[index]['quantity'] > 1) {
-        cartItems[index]['quantity']--;
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    _loadCart();
+  }
+
+  Future<void> _loadCart() async {
+    setState(() => isLoading = true);
+    try {
+      print("🔄 Fetching cart...");
+      final items = await CartService.fetchCartItems();
+      print("✅ Cart loaded: ${items.length} items");
+
+      setState(() {
+        cartItems = items;
+        isLoading = false;
+      });
+    } catch (e) {
+      print("❌ Error: $e");
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to load cart: $e")));
+    }
+  }
+
+  Future<void> _removeItem(String cartId) async {
+    await CartService.deleteCartItem(cartId);
+    await _loadCart();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
-      body: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: (){
-          FocusScope.of(context).unfocus();
-        },
-        child: cartItems.isEmpty
-          ? Center(
-            child: Text(
-            "Your cart is empty",
-            style: theme.textTheme.titleMedium,
-          ))
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : cartItems.isEmpty
+          ? Center(child: Text("Your cart is empty", style: theme.textTheme.titleMedium))
           : Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Expanded(
@@ -68,7 +69,7 @@ class _CartPageState extends State<CartPage> {
                 itemBuilder: (context, index) {
                   final item = cartItems[index];
                   return Dismissible(
-                    key: ValueKey(item['name'] + index.toString()),
+                    key: ValueKey(item.cartId),
                     direction: DismissDirection.endToStart,
                     background: Container(
                       alignment: Alignment.centerRight,
@@ -79,31 +80,34 @@ class _CartPageState extends State<CartPage> {
                       ),
                       child: const Icon(Icons.delete, color: Colors.white),
                     ),
-                    onDismissed: (_) {
-                      setState(() {
-                        cartItems.removeAt(index);
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${item['name']} removed from cart'),
-                        ),
-                      );
-                    },
+                    onDismissed: (_) => _removeItem(item.cartId),
                     child: Card(
-                      color: theme.cardColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       elevation: 3,
                       child: Row(
                         children: [
                           ClipRRect(
-                            borderRadius: const BorderRadius.horizontal(
-                                left: Radius.circular(16)),
-                            child: Image.asset(
-                              item['image'],
+                            borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+                            child: item.image.isNotEmpty
+                                ? Image.network(
+                              item.image,
                               height: 100,
                               width: 100,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  height: 100,
+                                  width: 100,
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.broken_image, color: Colors.grey),
+                                );
+                              },
+                            )
+                                : Container(
+                              height: 100,
+                              width: 100,
+                              color: Colors.grey[300],
+                              child: const Icon(Icons.image_not_supported, color: Colors.grey),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -111,27 +115,11 @@ class _CartPageState extends State<CartPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(item['name'],
-                                    style: theme.textTheme.titleMedium),
+                                Text(item.name, style: theme.textTheme.titleMedium),
                                 const SizedBox(height: 8),
-                                Text('Rs. ${item['price']}',
-                                    style: theme.textTheme.bodySmall),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove),
-                                      onPressed: () =>
-                                          updateQuantity(index, false),
-                                    ),
-                                    Text('${item['quantity']}'),
-                                    IconButton(
-                                      icon: const Icon(Icons.add),
-                                      onPressed: () =>
-                                          updateQuantity(index, true),
-                                    ),
-                                  ],
-                                )
+                                Text('Rs. ${item.finalPrice.toStringAsFixed(2)} x ${item.quantity}'),
+                                const SizedBox(height: 4),
+                                Text('Total: Rs. ${item.total.toStringAsFixed(2)}'),
                               ],
                             ),
                           )
@@ -143,66 +131,47 @@ class _CartPageState extends State<CartPage> {
               ),
             ),
             const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text("Total:",
-                    style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold)),
-                Text("Rs. $totalPrice",
-                    style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold)),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/payment");
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors().primary,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: const Text(
-                      "Go to Checkout",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
+                _summaryRow("Subtotal", subTotal),
+                _summaryRow("Discount", -discount),
+                _summaryRow("Delivery", deliveryFee),
+                Divider(),
+                _summaryRow("Grand Total", grandTotal, isBold: true),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/payment");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors().primary,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/home");
-                    },
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      side: BorderSide(
-                          color: AppColors().primary, width: 1.5),
-                    ),
-                    child: Text(
-                      "More Products",
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
+                  child: const Text("Go to Checkout", style: TextStyle(fontSize: 16, color: Color(0xFFFFFFFF))),
+                )
               ],
-            ),
+            )
           ],
         ),
-      ),)
+      ),
+    );
+  }
+
+  Widget _summaryRow(String label, double amount, {bool isBold = false}) {
+    final style = isBold
+        ? const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
+        : const TextStyle(fontSize: 14);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: style),
+          Text("Rs. ${amount.toStringAsFixed(2)}", style: style),
+        ],
+      ),
     );
   }
 }
