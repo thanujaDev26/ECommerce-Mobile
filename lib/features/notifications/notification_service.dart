@@ -34,4 +34,22 @@ class NotificationService {
       throw Exception('Failed to mark notification as read');
     }
   }
+
+  static Future<void> createNotification(String token, String description) async {
+    final response = await http.post(
+      Uri.parse('http://172.20.10.2:3001/api/v1/notifications'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'description': description}),
+    );
+
+    print('🔔 Response ${response.statusCode}: ${response.body}');
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create notification');
+    }
+  }
+
 }
