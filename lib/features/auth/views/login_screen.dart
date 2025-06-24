@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    final url = Uri.parse('http://192.168.1.104:3001/api/v1/auth/login');
+    final url = Uri.parse('http://172.20.10.2:3001/api/v1/auth/login');
     try {
       final response = await http.post(
         url,

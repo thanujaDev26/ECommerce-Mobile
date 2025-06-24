@@ -31,7 +31,7 @@ class _NewPasswordScreenState extends State<PasswordChanger> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.104:3001/api/v1/otp/reset-password'),
+        Uri.parse('http://172.20.10.2:3001/api/v1/otp/reset-password'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': widget.email,

@@ -3,7 +3,7 @@ import 'package:e_commerce/features/categories/catgories_pages/models/spices_mod
 import 'package:http/http.dart' as http;
 
 class SpicesService {
-  static const String _baseUrl = 'http://192.168.1.104:3001';
+  static const String _baseUrl = 'http://172.20.10.2:3001';
 
   static Future<List<SpicesModel>> fetchProducts() async {
     final response = await http.get(Uri.parse("$_baseUrl/api/v1/products/spices"));

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class RecommendationService {
   static Future<List<Map<String, dynamic>>> fetchRecommendedItems() async {
-    final response = await http.get(Uri.parse("http://192.168.1.104:3001/api/v1/products"));
+    final response = await http.get(Uri.parse("http://172.20.10.2:3001/api/v1/products"));
     // if (response.statusCode == 200) {
     //   final List<dynamic> jsonList = json.decode(response.body);
     //   return jsonList.cast<Map<String, dynamic>>();
