@@ -48,6 +48,7 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
       );
       CustomSnackbar.show(context, message: "Added to cart",backgroundColor: Colors.green,
         icon: Icons.check_circle,);
+      // Navigator.pushNamed(context, '/home');
     } catch (e) {
       CustomSnackbar.show(context, message: "Failed to add to cart: ${e}",backgroundColor: Colors.red,
         icon: Icons.warning_rounded,);

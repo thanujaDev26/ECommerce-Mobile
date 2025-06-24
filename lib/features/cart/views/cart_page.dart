@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:e_commerce/main.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/features/cart/cart_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +13,7 @@ class CartPage extends StatefulWidget {
   State<CartPage> createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartPage> {
+class _CartPageState extends State<CartPage> with RouteAware{
   List<CartItem> cartItems = [];
   bool isLoading = true;
 
@@ -20,6 +21,24 @@ class _CartPageState extends State<CartPage> {
   double get deliveryFee => cartItems.isEmpty ? 0.0 : 500.0;
   double get discount => cartItems.fold(0.0, (sum, item) => sum + (item.discount * item.quantity));
   double get grandTotal => subTotal + deliveryFee;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    _loadCart();
+  }
+
 
   @override
   void initState() {
@@ -46,9 +65,19 @@ class _CartPageState extends State<CartPage> {
   }
 
   Future<void> _removeItem(String cartId) async {
-    await CartService.deleteCartItem(cartId);
-    await _loadCart();
+    setState(() {
+      cartItems.removeWhere((item) => item.cartId == cartId);
+    });
+    try {
+      await CartService.deleteCartItem(cartId);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to remove item: $e")),
+      );
+      await _loadCart();
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

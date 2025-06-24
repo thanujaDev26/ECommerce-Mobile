@@ -20,6 +20,7 @@ import 'package:e_commerce/features/payment/views/payment_ui_screen.dart';
 void main() async{
   runApp(ECommerceAppRoot());
 }
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
 class ECommerceAppRoot extends StatefulWidget {
   const ECommerceAppRoot({super.key,});
@@ -29,6 +30,8 @@ class ECommerceAppRoot extends StatefulWidget {
 }
 
 class _ECommerceAppRootState extends State<ECommerceAppRoot> {
+
+
   bool isDarkMode = false;
 
   void _toggleTheme(bool value) {
@@ -40,6 +43,7 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [routeObserver],
       debugShowCheckedModeBanner: false,
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
