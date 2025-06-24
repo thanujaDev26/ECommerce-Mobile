@@ -57,7 +57,7 @@ class _ProductCommentBoxState extends State<ProductCommentBox> {
     // final userId = "mock-user-id";
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.104:3001/api/v1/ratings/products/${widget.productId}'),
+      Uri.parse('http://172.20.10.2:3001/api/v1/ratings/products/${widget.productId}'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
