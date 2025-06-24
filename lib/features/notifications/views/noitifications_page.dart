@@ -1,19 +1,47 @@
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/features/notifications/notification_service.dart';
 import 'package:e_commerce/features/notifications/viewmodels/notification_model.dart';
+import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class NotificationsPage extends StatelessWidget {
+class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
   static const routeName = '/notifications';
-  Future<List<NotificationModel>> _loadNotifications() async {
+
+  @override
+  State<NotificationsPage> createState() => _NotificationsPageState();
+}
+
+class _NotificationsPageState extends State<NotificationsPage> {
+  late Future<List<NotificationModel>> _notificationsFuture;
+  String? _token;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTokenAndFetchNotifications();
+  }
+
+  Future<void> _loadTokenAndFetchNotifications() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('authToken');
     if (token == null) {
       throw Exception('User token not found.');
     }
-    return await NotificationService.fetchNotifications(token);
+    setState(() {
+      _token = token;
+      _notificationsFuture = NotificationService.fetchNotifications(token);
+    });
+  }
+
+  String timeAgo(DateTime dateTime) {
+    final diff = DateTime.now().difference(dateTime);
+    if (diff.inMinutes < 1) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} mins ago';
+    if (diff.inHours < 24) return '${diff.inHours} hours ago';
+    if (diff.inDays == 1) return 'Yesterday';
+    return '${diff.inDays} days ago';
   }
 
   @override
@@ -24,11 +52,12 @@ class NotificationsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors().primary,
-        title: const Text("Notifications", style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: FutureBuilder<List<NotificationModel>>(
-        future: _loadNotifications(),
+      body: _token == null
+          ? const Center(child: CircularProgressIndicator())
+          : FutureBuilder<List<NotificationModel>>(
+        future: _notificationsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -37,42 +66,70 @@ class NotificationsPage extends StatelessWidget {
           }
 
           final notifications = snapshot.data!;
+          if (notifications.isEmpty) {
+            return const Center(child: Text("No New notifications found"));
+          }
+
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: notifications.length,
             itemBuilder: (context, index) {
               final notification = notifications[index];
-              return Container(
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[900] : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    if (!isDark)
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                  ],
+              return Dismissible(
+                key: ValueKey(notification.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  color: Colors.green,
+                  child: const Icon(Icons.check, color: Colors.white),
                 ),
-                child: ListTile(
-                  leading: Icon(Icons.notifications, color: notification.isRead ? Colors.grey : Colors.orange),
-                  title: Text(
-                    notification.description,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : Colors.black,
-                    ),
+                onDismissed: (_) async {
+                  try {
+                    await NotificationService.markAsRead(notification.id, _token!);
+                    setState(() {
+                      notifications.removeAt(index);
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Marked as read')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: $e')),
+                    );
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.grey[900] : Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      if (!isDark)
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                    ],
                   ),
-                  subtitle: Text(
-                    timeAgo(notification.createdAt),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  child: ListTile(
+                    leading: Icon(Icons.notifications, color: notification.isRead ? Colors.grey : Colors.orange),
+                    title: Text(
+                      notification.description,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
                     ),
+                    subtitle: Text(
+                      timeAgo(notification.createdAt),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.all(12),
                   ),
-                  isThreeLine: false,
-                  contentPadding: const EdgeInsets.all(12),
                 ),
               );
             },
@@ -81,14 +138,5 @@ class NotificationsPage extends StatelessWidget {
         },
       ),
     );
-  }
-
-  String timeAgo(DateTime dateTime) {
-    final diff = DateTime.now().difference(dateTime);
-    if (diff.inMinutes < 1) return 'Just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} mins ago';
-    if (diff.inHours < 24) return '${diff.inHours} hours ago';
-    if (diff.inDays == 1) return 'Yesterday';
-    return '${diff.inDays} days ago';
   }
 }

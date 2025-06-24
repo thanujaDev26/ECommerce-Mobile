@@ -20,4 +20,18 @@ class NotificationService {
       throw Exception('Failed to load notifications');
     }
   }
+
+  static Future<void> markAsRead(String id, String token) async {
+    final url = '$baseUrl/$id/read';
+    final response = await http.put(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to mark notification as read');
+    }
+  }
 }
