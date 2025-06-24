@@ -21,20 +21,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   bool isPasswordVisible = false;
 
-  // void _loginUser() async {
-  //   setState(() => isLoading = true);
-  //   await Future.delayed(const Duration(seconds: 2));
-  //   setState(() => isLoading = false);
-  //   Navigator.pushReplacementNamed(context, '/home');
-  // }
-
-
   Future<void> _storeToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('authToken', token);
   }
-
-
 
   void _loginUser() async {
     setState(() => isLoading = true);

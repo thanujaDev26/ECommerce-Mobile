@@ -60,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           context,
           message: data['message'],
           backgroundColor: Colors.red,
-          icon: Icons.check_circle,
+          icon: Icons.warning_rounded,
         );
       };
     } catch (e) {

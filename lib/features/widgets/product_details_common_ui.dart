@@ -3,9 +3,13 @@ import 'dart:convert';
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/features/widgets/comment_section_common_ui.dart';
 import 'package:e_commerce/features/widgets/similar_products_list.dart';
+import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
+import 'package:e_commerce/features/notifications/notification_service.dart';
+import 'package:e_commerce/features/cart/cart_service.dart';
+import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HandcraftProductDetailPage extends StatefulWidget {
   final HandcraftProduct product;
@@ -24,20 +28,45 @@ class HandcraftProductDetailPage extends StatefulWidget {
 class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage> {
   bool _showAllReviews = false;
 
+  Future<void> _addToCartAndNotify(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('authToken');
+
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please login to add items to cart")),
+      );
+      return;
+    }
+
+    try {
+      await CartService.addToCart(widget.product.id, token);
+
+      await NotificationService.createNotification(
+        token,
+        'You added "${widget.product.title}" to your cart.',
+      );
+      CustomSnackbar.show(context, message: "Added to cart",backgroundColor: Colors.green,
+        icon: Icons.check_circle,);
+    } catch (e) {
+      CustomSnackbar.show(context, message: "Failed to add to cart: ${e}",backgroundColor: Colors.red,
+        icon: Icons.warning_rounded,);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
     final reviews = widget.product.ratings ?? [];
     final visibleReviews = _showAllReviews ? reviews : reviews.take(2).toList();
-
     final textColor = isDarkMode ? Colors.white : Colors.black;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.product.title ?? 'Untitled',
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -45,6 +74,13 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
         ),
         backgroundColor: AppColors().primary,
         iconTheme: IconThemeData(color: theme.colorScheme.onPrimary),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_shopping_cart, color: Colors.white),
+            tooltip: 'Add to Cart',
+            onPressed: () => _addToCartAndNotify(context),
+          ),
+        ],
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
