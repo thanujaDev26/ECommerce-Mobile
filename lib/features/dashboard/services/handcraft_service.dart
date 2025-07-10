@@ -6,7 +6,7 @@ class ProductService {
   static const String _baseUrl = 'http://172.20.10.2:3001';
 
   static Future<List<HandcraftProduct>> fetchProducts() async {
-    final response = await http.get(Uri.parse("http://172.20.10.2:3001/api/v1/products"));
+    final response = await http.get(Uri.parse("http://192.168.1.118:3001/api/v1/products"));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       // print(data);

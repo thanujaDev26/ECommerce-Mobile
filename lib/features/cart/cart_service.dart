@@ -48,7 +48,7 @@ class CartItem {
   }
 }
 class CartService {
-  static const String baseUrl = 'http://172.20.10.2:3001/api/v1/cart';
+  static const String baseUrl = 'http://192.168.1.118:3001/api/v1/cart';
 
   static Future<void> addToCart(String productId, String token) async {
     final url = '$baseUrl/add';

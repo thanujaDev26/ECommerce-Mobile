@@ -3,7 +3,7 @@ import 'package:e_commerce/features/notifications/viewmodels/notification_model.
 import 'package:http/http.dart' as http;
 
 class NotificationService {
-  static const String baseUrl = 'http://172.20.10.2:3001/api/v1/notifications';
+  static const String baseUrl = 'http://192.168.1.118:3001/api/v1/notifications';
 
   static Future<List<NotificationModel>> fetchNotifications(String token) async {
     final response = await http.get(
@@ -37,7 +37,7 @@ class NotificationService {
 
   static Future<void> createNotification(String token, String description) async {
     final response = await http.post(
-      Uri.parse('http://172.20.10.2:3001/api/v1/notifications'),
+      Uri.parse('http://192.168.1.118:3001/api/v1/notifications'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

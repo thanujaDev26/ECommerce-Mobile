@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    final url = Uri.parse('http://172.20.10.2:3001/api/v1/auth/login');
+    final url = Uri.parse('http://192.168.1.118:3001/api/v1/auth/login');
     try {
       final response = await http.post(
         url,
@@ -268,17 +268,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 16),
 
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(16),
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 52,
-                                child: SignInButton(
-                                  Buttons.Google,
+                                child: SignInButtonBuilder(
+                                  text: 'Sign in with Google',
+                                  icon: null,
+                                  image: Image.asset(
+                                    'assets/g-logo.png',
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  backgroundColor: Colors.white,
+                                  textColor: Colors.black87,
+                                  fontSize: 16,
+                                  innerPadding: const EdgeInsets.symmetric(horizontal: 16),
                                   onPressed: _loginWithGoogle,
-                                  padding: EdgeInsets.symmetric(horizontal: 24),
+                                  elevation: 2,
                                 ),
                               ),
                             ),
+
 
 
                             const SizedBox(height: 16),
@@ -312,7 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                           color: themeColor.withOpacity(0.8),
                           fontWeight: FontWeight.w600,
-                          decoration: TextDecoration.underline,
+                          decoration: TextDecoration.none,
                         ),
                       ),
                     ),
