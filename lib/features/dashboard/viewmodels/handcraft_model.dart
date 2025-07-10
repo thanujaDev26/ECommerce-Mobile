@@ -13,6 +13,8 @@ class HandcraftProduct {
   final int totalReviews;
   final List<Rating>? ratings;
   final List<String>? tags;
+  final String sellerId;
+  final String? sellerName;
 
   HandcraftProduct({
     required this.id,
@@ -27,6 +29,8 @@ class HandcraftProduct {
     required this.totalReviews,
     this.ratings = const [],
     required this.tags,
+    required this.sellerId,
+    required this.sellerName,
   });
 
   factory HandcraftProduct.fromJson(Map<String, dynamic> json) {
@@ -48,6 +52,8 @@ class HandcraftProduct {
           .map((r) => Rating.fromJson(r))
           .toList() ?? [],
       tags: List<String>.from(json['tags'] ?? []),
+      sellerId: json['sellerId'] ?? '',
+      sellerName: json['sellerName'],
     );
   }
 }

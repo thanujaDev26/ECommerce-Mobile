@@ -2,8 +2,10 @@ import 'package:e_commerce/features/auth/views/forgot_password_screen.dart';
 import 'package:e_commerce/features/auth/views/login_screen.dart';
 import 'package:e_commerce/features/auth/views/password_changer.dart';
 import 'package:e_commerce/features/auth/views/register_screen.dart';
+import 'package:e_commerce/features/cart/cart_service.dart';
 import 'package:e_commerce/features/flash/views/flash_screen.dart';
 import 'package:e_commerce/features/notifications/views/noitifications_page.dart';
+import 'package:e_commerce/features/widgets/chat_page.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/features/dashboard/views/dashboard_screen.dart';
 import 'package:e_commerce/features/categories/views/categories_list.dart';
@@ -30,7 +32,6 @@ class ECommerceAppRoot extends StatefulWidget {
 }
 
 class _ECommerceAppRootState extends State<ECommerceAppRoot> {
-
 
   bool isDarkMode = false;
 
@@ -82,6 +83,7 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
         '/register': (context) => const RegisterScreen(),
         '/forgot_password': (context) => const ForgotPasswordScreen(),
         '/change-password':(context) => const PasswordChanger(email: "", otp: ""),
+        '/chat':(context) => const ChatPage(),
       },
       home: SplashScreen(isDarkMode: isDarkMode, onThemeChanged: _toggleTheme),
     );

@@ -1,41 +1,54 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:e_commerce/features/cart/cart_service.dart';
 import 'package:e_commerce/features/payment/widgets/advert_video_player.dart';
 import 'package:flutter/material.dart';
 
 class PaymentUiScreen extends StatefulWidget {
   const PaymentUiScreen({super.key});
+
   @override
   State<PaymentUiScreen> createState() => _PaymentDashboardState();
 }
 
 class _PaymentDashboardState extends State<PaymentUiScreen> {
   String selectedPaymentMethod = "Credit Card";
-  final TextEditingController couponController = TextEditingController();
   final TextEditingController cardNumberController = TextEditingController();
   final TextEditingController expiryController = TextEditingController();
   final TextEditingController cvvController = TextEditingController();
 
-  final List<String> sponsorImages = [
-    'assets/banners/banner1.png',
-    'assets/banners/banner2.png',
-    'assets/banners/banner3.png',
-  ];
-
-  final CarouselOptions carouselOptions = CarouselOptions(
-    height: 160,
-    autoPlay: true,
-    enlargeCenterPage: true,
-    viewportFraction: 0.8,
-    aspectRatio: 16 / 9,
-    autoPlayInterval: const Duration(seconds: 3),
-  );
-
-  String couponMessage = "";
   bool isCvvObscured = true;
   bool isLoading = false;
-  double totalAmount = 1000;
-  double discountPercent = 0;
+
+  List<CartItem> cartItems = [];
+  bool isCartLoading = true;
+
+  double get subTotal => cartItems.fold(0.0, (sum, item) => sum + item.total);
+  double get deliveryFee => cartItems.isEmpty ? 0.0 : 500.0;
+  double get discount => cartItems.fold(0.0, (sum, item) => sum + (item.discount * item.quantity));
+  double get grandTotal => subTotal + deliveryFee - discount;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCartTotal();
+  }
+
+  Future<void> _loadCartTotal() async {
+    setState(() => isCartLoading = true);
+    try {
+      final items = await CartService.fetchCartItems();
+      setState(() {
+        cartItems = items;
+        isCartLoading = false;
+      });
+    } catch (e) {
+      setState(() => isCartLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to load cart: $e")),
+      );
+    }
+  }
 
   bool get isFormValid {
     return _validateCardNumber(cardNumberController.text) &&
@@ -43,34 +56,9 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
         _validateCvv(cvvController.text);
   }
 
-  bool _validateCardNumber(String input) {
-    return RegExp(r'^\d{16}$').hasMatch(input);
-  }
-
-  bool _validateExpiry(String input) {
-    return RegExp(r'^(0[1-9]|1[0-2])\/?([0-9]{2})$').hasMatch(input);
-  }
-
-  bool _validateCvv(String input) {
-    return RegExp(r'^\d{3,4}$').hasMatch(input);
-  }
-
-  void _redeemCoupon() {
-    setState(() {
-      if (couponController.text.trim().isEmpty) {
-        couponMessage = "Please enter a coupon code.";
-        discountPercent = 0;
-      } else {
-        if (couponController.text.trim().toLowerCase() == "flutter50") {
-          couponMessage = "Coupon applied! You got 50% off.";
-          discountPercent = 50;
-        } else {
-          couponMessage = "Invalid coupon code.";
-          discountPercent = 0;
-        }
-      }
-    });
-  }
+  bool _validateCardNumber(String input) => RegExp(r'^\d{16}$').hasMatch(input);
+  bool _validateExpiry(String input) => RegExp(r'^(0[1-9]|1[0-2])\/?([0-9]{2})$').hasMatch(input);
+  bool _validateCvv(String input) => RegExp(r'^\d{3,4}$').hasMatch(input);
 
   void _onPayNow() async {
     if (!isFormValid) {
@@ -89,13 +77,8 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
     );
   }
 
-  double get finalAmount {
-    return totalAmount * (1 - discountPercent / 100);
-  }
-
   @override
   void dispose() {
-    couponController.dispose();
     cardNumberController.dispose();
     expiryController.dispose();
     cvvController.dispose();
@@ -107,16 +90,18 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final primaryColor = AppColors().primary;
-    final backgroundColor = isDark ? Colors.black : Colors.white;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: isDark ? Colors.black : Colors.white,
       appBar: AppBar(
-        centerTitle: true,
+        title: const Text("Payment"),
         backgroundColor: primaryColor,
+        centerTitle: true,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
+      body: isCartLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -152,7 +137,7 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Rs. ${finalAmount.toStringAsFixed(2)}",
+                      "Rs. ${grandTotal.toStringAsFixed(2)}",
                       style: const TextStyle(
                         fontSize: 42,
                         fontWeight: FontWeight.bold,
@@ -166,85 +151,22 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
             ),
 
             const SizedBox(height: 30),
-            Align(
-              alignment: Alignment.center,
-              child: Text("Select Payment Method", style: theme.textTheme.titleMedium),
-            ),
-
+            Text("Select Payment Method", style: theme.textTheme.titleMedium),
             const SizedBox(height: 16),
-            Align(
-              alignment: Alignment.center,
-              child: Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                alignment: WrapAlignment.center,
-                children: [
-                  _paymentMethodButton("Credit/Debit", "assets/CrediCard.png"),
-                  _paymentMethodButton("Cash On Delivery", "assets/cash-on-delivery.png"),
-                ],
-              ),
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              alignment: WrapAlignment.center,
+              children: [
+                _paymentMethodButton("Credit/Debit", "assets/CrediCard.png"),
+                _paymentMethodButton("Cash On Delivery", "assets/cash-on-delivery.png"),
+              ],
             ),
-            const SizedBox(height: 30),
 
+            const SizedBox(height: 30),
             Text("Sponsored", style: theme.textTheme.titleMedium),
             const SizedBox(height: 12),
             AdvertVideoPlayer(videoPath: "assets/demo_images/0618.mp4"),
-
-            const SizedBox(height: 30),
-            Text("Have a Coupon?", style: theme.textTheme.titleMedium),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: couponController,
-                    decoration: InputDecoration(
-                      hintText: "Enter coupon code",
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: primaryColor, width: 2),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                SizedBox(
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: _redeemCoupon,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      elevation: 5,
-                    ),
-                    child: const Text(
-                      "Redeem",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            if (couponMessage.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: Text(
-                  couponMessage,
-                  style: TextStyle(
-                    color: couponMessage.contains("Invalid") ? Colors.red : Colors.green,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
 
             const SizedBox(height: 30),
             Container(
@@ -312,9 +234,7 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
                   shadowColor: primaryColor.withOpacity(0.7),
                 ),
                 child: isLoading
-                    ? const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                )
+                    ? const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
                     : const Text(
                   "Pay Now",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
@@ -328,9 +248,7 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
   }
 
   Widget _buildTextField(String label, TextInputType type,
-      {required TextEditingController controller,
-        bool obscure = false,
-        Widget? suffixIcon}) {
+      {required TextEditingController controller, bool obscure = false, Widget? suffixIcon}) {
     final theme = Theme.of(context);
     return TextField(
       controller: controller,
