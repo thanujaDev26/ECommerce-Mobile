@@ -14,7 +14,7 @@ import 'package:e_commerce/features/profile/views/profile_page.dart';
 import 'package:e_commerce/features/categories/catgories_pages/handcrafts.dart';
 import 'package:e_commerce/features/categories/catgories_pages/spices.dart';
 import 'package:e_commerce/features/categories/catgories_pages/herbal.dart';
-import 'package:e_commerce/features/categories/catgories_pages/clay_pots.dart';
+import 'package:e_commerce/features/categories/catgories_pages/clothing.dart';
 import 'package:e_commerce/features/categories/catgories_pages/tea.dart';
 import 'package:e_commerce/features/payment/views/payment_ui_screen.dart';
 
@@ -74,7 +74,7 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
         '/handcrafts': (context) => const Handcrafts(),
         '/spices': (context) => const Spices(),
         '/herbal': (context) => const Herbal(),
-        '/claypots': (context) => const ClayPots(),
+        '/clothing': (context) => const Clothing(),
         '/beverages': (context) => const Tea(),
         '/foods': (context) => const Tea(),
         '/payment': (context) => const PaymentUiScreen(),

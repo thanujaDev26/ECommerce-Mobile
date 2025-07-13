@@ -1,5 +1,5 @@
 import 'package:e_commerce/features/categories/catgories_pages/models/herbal_model.dart';
-import 'package:e_commerce/features/categories/catgories_pages/similar_pages/similar_herbal_products.dart';
+import 'package:e_commerce/features/categories/catgories_pages/similar_pages/similar_herbal_products_suggession.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
@@ -16,7 +16,7 @@ class HerbalCommonUi extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(product.title ?? 'Untitled')),
+      appBar: AppBar(title: Text('Herbals')),
       body: ListView(
         children: [
           Image.network(

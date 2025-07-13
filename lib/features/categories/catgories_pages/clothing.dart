@@ -1,41 +1,39 @@
-import 'package:e_commerce/features/categories/catgories_pages/common_pages/herbal_common_ui.dart';
-import 'package:e_commerce/features/categories/catgories_pages/models/herbal_model.dart';
-import 'package:e_commerce/features/categories/catgories_pages/models/spices_model.dart';
-import 'package:e_commerce/features/categories/catgories_pages/services/herbal_service.dart';
-import 'package:e_commerce/features/categories/catgories_pages/services/spices_service.dart';
+import 'package:e_commerce/features/categories/catgories_pages/common_pages/clothing_common_ui.dart';
+import 'package:e_commerce/features/categories/catgories_pages/models/clothing_model.dart';
+import 'package:e_commerce/features/categories/catgories_pages/services/clothing_service.dart';
 import 'package:flutter/material.dart';
 
-class Spices extends StatefulWidget {
-  const Spices({super.key});
+class Clothing extends StatefulWidget {
+  const Clothing({super.key});
 
   @override
-  State<Spices> createState() => _SpicesState();
+  State<Clothing> createState() => _HandcraftsState();
 }
 
-class _SpicesState extends State<Spices> {
-  late Future<List<SpicesModel>> _spicesProducts;
+class _HandcraftsState extends State<Clothing> {
+  late Future<List<ClothingModel>> _clothingProducts;
 
   @override
   void initState() {
     super.initState();
-    _spicesProducts = SpicesService.fetchProducts();
+    _clothingProducts = ClothingService.fetchProducts();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Spices')),
+      appBar: AppBar(title: const Text('Clothing')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder<List<SpicesModel>>(
-          future: _spicesProducts,
+        child: FutureBuilder<List<ClothingModel>>(
+          future: _clothingProducts,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text("No handcraft products found."));
+              return const Center(child: Text("No Clothing products found."));
             }
 
             final products = snapshot.data!;
@@ -53,7 +51,7 @@ class _SpicesState extends State<Spices> {
 
                   return InkWell(
                     onTap: () {
-                      final selectedProduct = HerbalModel(
+                      final selectedProduct = ClothingModel(
                         id: product.id,
                         title: product.title,
                         description: product.description,
@@ -68,7 +66,7 @@ class _SpicesState extends State<Spices> {
                         totalReviews: product.totalReviews ?? 0,
                       );
 
-                      final allProducts = products.map((p) => HerbalModel(
+                      final allProducts = products.map((p) => ClothingModel(
                         id: p.id,
                         title: p.title,
                         description: p.description,
@@ -86,7 +84,7 @@ class _SpicesState extends State<Spices> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HerbalCommonUi(
+                          builder: (context) => ClothingCommonUi(
                             product: selectedProduct,
                             allProducts: allProducts,
                           ),

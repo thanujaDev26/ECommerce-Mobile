@@ -11,15 +11,15 @@ class CategoryList extends StatelessWidget {
       {"label": "Handcrafts", "icon": Icons.handyman, "route": "/handcrafts"},
       {"label": "Spices", "icon": Icons.local_fire_department, "route": "/spices"},
       {"label": "Herbal", "icon": Icons.eco, "route": "/herbal"},
-      {"label": "Clay Pots", "icon": Icons.rice_bowl, "route": "/claypots"},
-      {"label": "Tea", "icon": Icons.local_cafe, "route": "/beverages"},
+      {"label": "Clothing", "icon": Icons.checkroom, "route": "/clothing"},
+      {"label": "Tea", "icon": Icons.emoji_food_beverage, "route": "/beverages"},
     ];
 
     final Map<String, Color> categoryColors = {
       "Handcrafts": Colors.brown,
       "Spices": Colors.redAccent,
       "Herbal": Colors.green,
-      "Clay Pots": Colors.deepOrange,
+      "Clothing": Colors.deepPurpleAccent,
       "Tea": Colors.brown.shade300,
     };
 

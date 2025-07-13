@@ -17,7 +17,8 @@ class ChatWithSellerFAB extends StatefulWidget {
   State<ChatWithSellerFAB> createState() => _ChatWithSellerFABState();
 }
 
-class _ChatWithSellerFABState extends State<ChatWithSellerFAB> with SingleTickerProviderStateMixin {
+class _ChatWithSellerFABState extends State<ChatWithSellerFAB>
+    with SingleTickerProviderStateMixin {
   late AnimationController _glowController;
 
   @override
@@ -86,7 +87,8 @@ class _ChatWithSellerFABState extends State<ChatWithSellerFAB> with SingleTicker
                   child: Center(
                     child: Text(
                       '${widget.unreadMessages}',
-                      style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
