@@ -74,7 +74,7 @@ class _ECommerceAppRootState extends State<ECommerceAppRoot> {
         '/handcrafts': (context) => const Handcrafts(),
         '/spices': (context) => const Spices(),
         '/herbal': (context) => const Herbal(),
-        '/clothing': (context) => const Clothing(),
+        '/claypots': (context) => const Clothing(),
         '/beverages': (context) => const Tea(),
         '/foods': (context) => const Tea(),
         '/payment': (context) => const PaymentUiScreen(),

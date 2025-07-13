@@ -73,6 +73,7 @@ flutter:
     - assets/categories/beverages.png
     - assets/categories/foods.png
     - assets/categories/pots.png
+    - assets/categories/clothing.png
     - assets/apple-pay.png
     - assets/apple-pay2.png
     - assets/CrediCard.png

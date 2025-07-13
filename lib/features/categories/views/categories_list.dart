@@ -21,8 +21,8 @@ class CategoriesList extends StatelessWidget {
       "route": "/herbal"
     },
     {
-      "label": "Clay Pots",
-      "image": "assets/categories/pots.png",
+      "label": "Clothing",
+      "image": "assets/categories/clothing.png",
       "route": "/claypots"
     },
     {
