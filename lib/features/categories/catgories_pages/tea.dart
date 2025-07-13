@@ -1,8 +1,5 @@
-import 'package:e_commerce/features/categories/catgories_pages/common_pages/handcraft_common_ui.dart';
 import 'package:e_commerce/features/categories/catgories_pages/common_pages/tea_common_ui.dart';
-import 'package:e_commerce/features/categories/catgories_pages/models/handcraft_model.dart';
 import 'package:e_commerce/features/categories/catgories_pages/models/tea_model.dart';
-import 'package:e_commerce/features/categories/catgories_pages/services/handcraft_service.dart';
 import 'package:e_commerce/features/categories/catgories_pages/services/tea_service.dart';
 import 'package:flutter/material.dart';
 
