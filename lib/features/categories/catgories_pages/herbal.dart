@@ -1,8 +1,5 @@
-import 'package:e_commerce/features/categories/catgories_pages/common_pages/handcraft_common_ui.dart';
 import 'package:e_commerce/features/categories/catgories_pages/common_pages/herbal_common_ui.dart';
-import 'package:e_commerce/features/categories/catgories_pages/models/handcraft_model.dart';
 import 'package:e_commerce/features/categories/catgories_pages/models/herbal_model.dart';
-import 'package:e_commerce/features/categories/catgories_pages/services/handcraft_service.dart';
 import 'package:e_commerce/features/categories/catgories_pages/services/herbal_service.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +22,7 @@ class _HerbalState extends State<Herbal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Handcrafts')),
+      appBar: AppBar(title: const Text('Herbals')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder<List<HerbalModel>>(

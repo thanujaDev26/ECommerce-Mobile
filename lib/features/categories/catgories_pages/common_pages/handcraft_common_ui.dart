@@ -1,10 +1,8 @@
 import 'package:e_commerce/features/categories/catgories_pages/models/handcraft_model.dart';
 import 'package:e_commerce/features/categories/catgories_pages/similar_pages/similar_handcraft_products_suggession.dart';
-import 'package:e_commerce/features/widgets/similar_products_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
-import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 
 class HandcraftCommonUi extends StatelessWidget {
   final HandcraftModel product;
@@ -17,7 +15,7 @@ class HandcraftCommonUi extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(product.title ?? 'Untitled')),
+      appBar: AppBar(title: Text(product.title ?? 'Handcrafts')),
       body: ListView(
         children: [
           Image.network(

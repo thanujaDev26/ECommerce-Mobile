@@ -1,22 +1,23 @@
-import 'package:e_commerce/features/categories/catgories_pages/models/spices_model.dart';
-import 'package:e_commerce/features/categories/catgories_pages/similar_pages/similar_spices_products_suggessions.dart';
+import 'package:e_commerce/features/categories/catgories_pages/models/handcraft_model.dart';
+import 'package:e_commerce/features/categories/catgories_pages/models/tea_model.dart';
+import 'package:e_commerce/features/categories/catgories_pages/similar_pages/similar_handcraft_products_suggession.dart';
+import 'package:e_commerce/features/categories/catgories_pages/similar_pages/similar_tea_products_suggessions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
 
+class TeaCommonUi extends StatelessWidget {
+  final TeaModel product;
+  final List<TeaModel> allProducts;
 
-class SpicesCommonUi extends StatelessWidget {
-  final SpicesModel product;
-  final List<SpicesModel> allProducts;
-
-  const SpicesCommonUi({super.key, required this.product, required this.allProducts});
+  const TeaCommonUi({super.key, required this.product, required this.allProducts});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(product.title ?? 'Spices')),
+      appBar: AppBar(title: Text('Food and Beverages')),
       body: ListView(
         children: [
           Image.network(
@@ -75,11 +76,13 @@ class SpicesCommonUi extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Circle Avatar Placeholder (Initial or Icon)
                             CircleAvatar(
                               backgroundColor: AppColors().primary.withOpacity(0.1),
                               child: const Icon(Icons.person, color: Colors.grey),
                             ),
                             const SizedBox(width: 12),
+                            // Review Details
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +114,7 @@ class SpicesCommonUi extends StatelessWidget {
                     );
                   }).toList(),
                 ],
-                SimilarSpicesProductsSuggessions(currentProduct: product, allProducts: allProducts,),
+                SimilarTeaProductsSuggessions(currentProduct: product, allProducts: allProducts,),
               ],
             ),
           ),

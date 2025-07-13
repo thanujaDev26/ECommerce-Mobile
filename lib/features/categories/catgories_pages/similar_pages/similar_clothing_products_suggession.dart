@@ -1,18 +1,21 @@
+import 'package:e_commerce/features/categories/catgories_pages/common_pages/clothing_common_ui.dart';
+import 'package:e_commerce/features/categories/catgories_pages/common_pages/handcraft_common_ui.dart';
+import 'package:e_commerce/features/categories/catgories_pages/models/clothing_model.dart';
+import 'package:e_commerce/features/categories/catgories_pages/models/handcraft_model.dart';
 import 'package:flutter/material.dart';
-import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
-import 'package:e_commerce/features/widgets/product_details_common_ui.dart';
 
-class SimilarProductsList extends StatelessWidget {
-  final HandcraftProduct currentProduct;
-  final List<HandcraftProduct> allProducts;
 
-  const SimilarProductsList({
+class SimilarClothingProductsSuggession extends StatelessWidget {
+  final ClothingModel currentProduct;
+  final List<ClothingModel> allProducts;
+
+  const SimilarClothingProductsSuggession({
     super.key,
     required this.currentProduct,
     required this.allProducts,
   });
 
-  List<HandcraftProduct> getSimilarProducts() {
+  List<ClothingModel> getSimilarProducts() {
     final currentTags = currentProduct.tags ?? [];
     return allProducts
         .where((p) =>
@@ -24,11 +27,8 @@ class SimilarProductsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final similar = getSimilarProducts();
-    if (similar.isEmpty) return const SizedBox();
 
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
+    if (similar.isEmpty) return const SizedBox();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,9 +36,8 @@ class SimilarProductsList extends StatelessWidget {
         const SizedBox(height: 24),
         Text(
           'Similar Products',
-          style: textTheme.titleMedium?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: colorScheme.onBackground,
           ),
         ),
         const SizedBox(height: 12),
@@ -54,10 +53,7 @@ class SimilarProductsList extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => HandcraftProductDetailPage(
-                        product: product,
-                        allProducts: allProducts,
-                      ),
+                      builder: (_) => ClothingCommonUi(product: product, allProducts: allProducts,),
                     ),
                   );
                 },
@@ -66,21 +62,13 @@ class SimilarProductsList extends StatelessWidget {
                   margin: const EdgeInsets.only(right: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: colorScheme.surface,
-                    boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.shadow.withOpacity(0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                    color: Colors.grey[100],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ClipRRect(
-                        borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(12)),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                         child: Image.network(
                           product.primaryImageUrl,
                           height: 100,
@@ -97,31 +85,19 @@ class SimilarProductsList extends StatelessWidget {
                               product.title ?? '',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: colorScheme.onSurface,
-                              ),
+                              style: const TextStyle(fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               "LKR ${product.price.toStringAsFixed(0)}",
-                              style: textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.primary,
-                              ),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                const Icon(Icons.star,
-                                    size: 14, color: Colors.amber),
+                                const Icon(Icons.star, size: 14, color: Colors.amber),
                                 const SizedBox(width: 4),
-                                Text(
-                                  product.averageRating.toStringAsFixed(1),
-                                  style: textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
+                                Text(product.averageRating.toStringAsFixed(1)),
                               ],
                             ),
                           ],

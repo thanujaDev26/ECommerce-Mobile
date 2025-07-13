@@ -1,16 +1,16 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/features/widgets/chat_with_seller_fab.dart';
 import 'package:e_commerce/features/widgets/comment_section_common_ui.dart';
 import 'package:e_commerce/features/widgets/similar_products_list.dart';
-import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 import 'package:e_commerce/features/notifications/notification_service.dart';
 import 'package:e_commerce/features/cart/cart_service.dart';
 import 'package:e_commerce/widgets/custom_snackbar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 
 class HandcraftProductDetailPage extends StatefulWidget {
   final HandcraftProduct product;
@@ -45,14 +45,21 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
 
       await NotificationService.createNotification(
         token,
-        'You added "${widget.product.title}" to your cart.',
+        'You added "${widget.product.title ?? 'a product'}" to your cart.',
       );
-      CustomSnackbar.show(context, message: "Added to cart",backgroundColor: Colors.green,
-        icon: Icons.check_circle,);
-      // Navigator.pushNamed(context, '/home');
+      CustomSnackbar.show(
+        context,
+        message: "Added to cart",
+        backgroundColor: Colors.green,
+        icon: Icons.check_circle,
+      );
     } catch (e) {
-      CustomSnackbar.show(context, message: "Failed to add to cart: ${e}",backgroundColor: Colors.red,
-        icon: Icons.warning_rounded,);
+      CustomSnackbar.show(
+        context,
+        message: "Failed to add to cart: $e",
+        backgroundColor: Colors.red,
+        icon: Icons.warning_rounded,
+      );
     }
   }
 
@@ -147,57 +154,60 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
                         AnimatedSize(
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
-                          child: Column(
-                            children: visibleReviews.map((rating) {
-                              return Card(
-                                elevation: 2,
-                                margin: const EdgeInsets.symmetric(vertical: 8),
-                                color: theme.colorScheme.surface,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
-                                        child: const Icon(Icons.person, color: Colors.grey),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            RatingBarIndicator(
-                                              rating: rating.rating.toDouble(),
-                                              itemCount: 5,
-                                              itemSize: 18.0,
-                                              itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
-                                            ),
-                                            const SizedBox(height: 6),
-                                            Text(
-                                              rating.review,
-                                              style: TextStyle(
-                                                color: textColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              'Posted on: ${DateTime.now().toLocal().toString().split(' ')[0]}',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: isDarkMode ? Colors.grey[400] : Colors.grey[700],
-                                              ),
-                                            ),
-                                          ],
+                          child: ClipRect(
+                            child: Column(
+                              children: visibleReviews.map((rating) {
+                                return Card(
+                                  elevation: 2,
+                                  margin: const EdgeInsets.symmetric(vertical: 8),
+                                  color: theme.colorScheme.surface,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
+                                          child: const Icon(Icons.person, color: Colors.grey),
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              RatingBarIndicator(
+                                                rating: rating.rating.toDouble(),
+                                                itemCount: 5,
+                                                itemSize: 18.0,
+                                                itemBuilder: (context, _) =>
+                                                const Icon(Icons.star, color: Colors.amber),
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Text(
+                                                rating.review,
+                                                style: TextStyle(
+                                                  color: textColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                'Posted on: ${DateTime.now().toLocal().toString().split(' ')[0]}',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: isDarkMode ? Colors.grey[400] : Colors.grey[700],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            }).toList(),
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
                         if (reviews.length > 2)
@@ -213,7 +223,6 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
                               ),
                             ),
                           ),
-
                       ],
                       const SizedBox(height: 24),
                       ProductCommentBox(
@@ -232,8 +241,12 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
               ],
             ),
           ),
-          ChatWithSellerFAB(sellerId: widget.product.sellerId, sellerName: widget.product.sellerName ?? '')
-        ]
+          ChatWithSellerFAB(
+            sellerId: widget.product.sellerId,
+            sellerName: widget.product.sellerName ?? 'Seller',
+            unreadMessages: 3, // example value, replace with real unread count
+          ),
+        ],
       ),
     );
   }
