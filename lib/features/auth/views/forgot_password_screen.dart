@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:e_commerce/app/utils/config.dart';
 import 'package:e_commerce/features/auth/views/otp_verification_screen.dart';
 import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.118:3001/api/v1/otp/send'),
+        Uri.parse('$BASE_URL/api/v1/otp/send'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({"email": email}),
       );

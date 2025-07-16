@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'package:e_commerce/app/utils/config.dart';
 import 'package:e_commerce/features/categories/catgories_pages/models/herbal_model.dart';
 import 'package:http/http.dart' as http;
 
 class HerbalService {
-  static const String _baseUrl = 'http://192.168.1.118:3001';
+
 
   static Future<List<HerbalModel>> fetchProducts() async {
-    final response = await http.get(Uri.parse("$_baseUrl/api/v1/products/herbals"));
+    final response = await http.get(Uri.parse("$BASE_URL/api/v1/products/herbals"));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       // print(data);

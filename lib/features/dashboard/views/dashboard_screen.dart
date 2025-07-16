@@ -42,12 +42,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   UserProfile? userProfile;
   int _currentIndex = 0;
 
-  // final List<Widget> _pages = [
-  //   HomePage(userProfile: userProfile,),
-  //   CategoriesList(),
-  //   CartPage(),
-  //   ProfilePage(),
-  // ];
 
   @override
   void initState() {

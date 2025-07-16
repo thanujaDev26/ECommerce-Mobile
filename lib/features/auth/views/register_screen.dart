@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:e_commerce/app/utils/config.dart';
 import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,7 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isLoading = false;
 
   Future<void> _registerUser() async {
-    final url = Uri.parse('http://192.168.1.118:3001/api/v1/auth/register');
+    final url = Uri.parse('$BASE_URL/api/v1/auth/register');
     final body = {
       "fName": firstNameController.text,
       "lName": lastNameController.text,

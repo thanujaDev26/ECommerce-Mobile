@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:e_commerce/app/utils/config.dart';
 import 'package:e_commerce/features/auth/views/password_changer.dart';
 import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     setState(() => isVerifying = true);
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.118:3001/api/v1/otp/verify'),
+        Uri.parse('$BASE_URL/api/v1/otp/verify'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': widget.email,

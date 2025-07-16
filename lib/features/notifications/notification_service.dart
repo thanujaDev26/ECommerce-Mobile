@@ -1,13 +1,12 @@
 import 'dart:convert';
+import 'package:e_commerce/app/utils/config.dart';
 import 'package:e_commerce/features/notifications/viewmodels/notification_model.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationService {
-  static const String baseUrl = 'http://192.168.1.118:3001/api/v1/notifications';
-
   static Future<List<NotificationModel>> fetchNotifications(String token) async {
     final response = await http.get(
-      Uri.parse(baseUrl),
+      Uri.parse('$BASE_URL/api/v1/notifications'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -22,7 +21,7 @@ class NotificationService {
   }
 
   static Future<void> markAsRead(String id, String token) async {
-    final url = '$baseUrl/$id/read';
+    final url = '$BASE_URL/api/v1/notifications/$id/read';
     final response = await http.put(
       Uri.parse(url),
       headers: {
@@ -37,7 +36,7 @@ class NotificationService {
 
   static Future<void> createNotification(String token, String description) async {
     final response = await http.post(
-      Uri.parse('http://192.168.1.118:3001/api/v1/notifications'),
+      Uri.parse('$BASE_URL/api/v1/notifications'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
