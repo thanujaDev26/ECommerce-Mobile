@@ -1,16 +1,11 @@
 import 'dart:convert';
+import 'package:e_commerce/app/utils/config.dart';
 import 'package:e_commerce/features/dashboard/viewmodels/user_profile.dart';
 import 'package:http/http.dart' as http;
 
 class RecommendationService {
   static Future<List<Map<String, dynamic>>> fetchRecommendedItems() async {
-    final response = await http.get(Uri.parse("http://192.168.1.118:3001/api/v1/products"));
-    // if (response.statusCode == 200) {
-    //   final List<dynamic> jsonList = json.decode(response.body);
-    //   return jsonList.cast<Map<String, dynamic>>();
-    // } else {
-    //   throw Exception("Failed to load recommended items");
-    // }
+    final response = await http.get(Uri.parse("$BASE_URL/api/v1/products"));
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonMap = json.decode(response.body);
 

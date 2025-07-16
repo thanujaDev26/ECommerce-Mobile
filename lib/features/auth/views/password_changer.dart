@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:e_commerce/app/utils/config.dart';
 import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
@@ -31,7 +32,7 @@ class _NewPasswordScreenState extends State<PasswordChanger> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.118:3001/api/v1/otp/reset-password'),
+        Uri.parse('$BASE_URL/api/v1/otp/reset-password'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': widget.email,

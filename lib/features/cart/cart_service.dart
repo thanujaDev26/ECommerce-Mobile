@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:e_commerce/app/utils/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,8 +31,8 @@ class CartItem {
     return CartItem(
       cartId: json['id'].toString(),
       quantity: json['quantity'] ?? 0,
-      name: product['name'] ?? '', // ✅ correct key
-      image: (product['image'] ?? '').toString(), // ✅ correct key
+      name: product['name'] ?? '',
+      image: (product['image'] ?? '').toString(),
       price: _toDouble(product['price']),
       discount: _toDouble(product['discount']),
       finalPrice: _toDouble(product['finalPrice']),
@@ -48,10 +49,10 @@ class CartItem {
   }
 }
 class CartService {
-  static const String baseUrl = 'http://192.168.1.118:3001/api/v1/cart';
+
 
   static Future<void> addToCart(String productId, String token) async {
-    final url = '$baseUrl/add';
+    final url = '$BASE_URL/api/v1/cart/add';
     final response = await http.post(
       Uri.parse(url),
       headers: {
@@ -78,7 +79,7 @@ class CartService {
     if (token == null) throw Exception("⚠️ No token found");
     print("🔐 Token: ${prefs.getString('authToken')}");
     final response = await http.get(
-      Uri.parse('$baseUrl'),
+      Uri.parse('$BASE_URL/api/v1/cart'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
@@ -105,7 +106,7 @@ class CartService {
   static Future<void> deleteCartItem(String cartId) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('authToken');
-    final url = '$baseUrl/$cartId';
+    final url = '$BASE_URL/api/v1/cart/$cartId';
 
     final response = await http.delete(
       Uri.parse(url),
