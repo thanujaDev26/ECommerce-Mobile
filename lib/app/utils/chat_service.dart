@@ -1,33 +1,65 @@
+import 'dart:async';
+
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatService {
-  late IO.Socket socket;
+  IO.Socket? _socket;
+  bool _isConnected = false;
+  Completer<void>? _connectCompleter;
 
-  void connect(String userId) {
-    socket = IO.io('http://172.20.10.3:3001', <String, dynamic>{
+  Future<void> connect(String userId, void Function(Map<String, dynamic>) onMessage) async {
+    if (_isConnected) {
+      print('⚠️ Already connected');
+      return;
+    }
+
+    if (_socket != null && _connectCompleter != null) {
+      print('🟡 Waiting for existing connection to finish...');
+      return _connectCompleter!.future;
+    }
+
+    _connectCompleter = Completer<void>();
+
+    _socket = IO.io('http://172.20.10.3:3001', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
 
-    socket.connect();
+    _socket!.connect();
 
-    socket.onConnect((_) {
-      print('✅ Connected to Socket.IO as ${socket.id}');
-      socket.emit('join', userId);
+    _socket!.onConnect((_) {
+      print('✅ Connected as ${_socket!.id}');
+      _socket!.emit('join', userId);
+      _isConnected = true;
+      _connectCompleter?.complete();
     });
 
-    socket.on('receive_message', (data) {
-      print('📩 Message from ${data['senderId']}: ${data['message']}');
+    _socket!.off('receive_message');
+    _socket!.on('receive_message', (data) {
+      print('📩 Message: ${data['message']}');
+      onMessage(Map<String, dynamic>.from(data));
     });
 
-    socket.onDisconnect((_) {
-      print('❌ Disconnected from Socket.IO');
+    _socket!.onDisconnect((_) {
+      print('❌ Disconnected');
+      _isConnected = false;
     });
+
+    _socket!.onError((err) {
+      print('❗ Socket error: $err');
+    });
+
+    return _connectCompleter!.future;
   }
 
   void sendMessage(String senderId, String receiverId, String message, {String? productId}) {
+    if (_socket == null || !_isConnected) {
+      print("⚠️ Cannot send message: socket not connected");
+      return;
+    }
+
     final timestamp = DateTime.now().toIso8601String();
-    socket.emit('send_message', {
+    _socket!.emit('send_message', {
       'senderId': senderId,
       'receiverId': receiverId,
       'message': message,
@@ -37,6 +69,12 @@ class ChatService {
   }
 
   void disconnect() {
-    socket.disconnect();
+    _socket?.disconnect();
+    _socket?.destroy();
+    _socket = null;
+    _isConnected = false;
+    _connectCompleter = null;
   }
+
+  bool get isConnected => _isConnected;
 }
