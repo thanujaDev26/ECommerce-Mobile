@@ -1,3 +1,4 @@
+import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -86,7 +87,7 @@ class _ChatPageState extends State<ChatPage> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Chat with $sellerName'),
-        backgroundColor: Colors.blue,
+        backgroundColor: AppColors().primary,
       ),
       body: Column(
         children: [
@@ -139,7 +140,7 @@ class _ChatPageState extends State<ChatPage> {
                   const SizedBox(width: 8),
                   IconButton(
                     onPressed: _sendMessage,
-                    icon: const Icon(Icons.send, color: Colors.blue),
+                    icon: const Icon(Icons.send, color: Color(0xFF8D6E63)),
                   )
                 ],
               ),

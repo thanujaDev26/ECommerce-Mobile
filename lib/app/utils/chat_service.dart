@@ -5,7 +5,7 @@ class ChatService {
   late IO.Socket socket;
 
   void connect(String userId) {
-    socket = IO.io('$BASE_URL', <String, dynamic>{
+    socket = IO.io('http://172.20.10.3:3001', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
     });
