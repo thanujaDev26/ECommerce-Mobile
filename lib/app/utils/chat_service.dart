@@ -1,4 +1,3 @@
-import 'package:e_commerce/app/utils/config.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatService {
@@ -13,22 +12,27 @@ class ChatService {
     socket.connect();
 
     socket.onConnect((_) {
-      print('Connected to Socket.IO');
+      print('✅ Connected to Socket.IO as ${socket.id}');
       socket.emit('join', userId);
     });
 
     socket.on('receive_message', (data) {
-      print('📩 New message from ${data['senderId']}: ${data['message']}');
+      print('📩 Message from ${data['senderId']}: ${data['message']}');
     });
 
-    socket.onDisconnect((_) => print('Disconnected from Socket.IO'));
+    socket.onDisconnect((_) {
+      print('❌ Disconnected from Socket.IO');
+    });
   }
 
-  void sendMessage(String senderId, String receiverId, String message) {
+  void sendMessage(String senderId, String receiverId, String message, {String? productId}) {
+    final timestamp = DateTime.now().toIso8601String();
     socket.emit('send_message', {
       'senderId': senderId,
       'receiverId': receiverId,
       'message': message,
+      'timestamp': timestamp,
+      'productId': productId ?? '',
     });
   }
 
