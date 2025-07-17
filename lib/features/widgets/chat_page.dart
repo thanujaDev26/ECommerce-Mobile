@@ -56,9 +56,7 @@ class _ChatPageState extends State<ChatPage> {
         buyerId = id;
       });
 
-      _chatService.connect(id);
-
-      _chatService.socket.on('receive_message', (data) {
+      await _chatService.connect(id, (data) {
         if (!mounted) return;
         setState(() {
           _messages.add({
@@ -67,8 +65,11 @@ class _ChatPageState extends State<ChatPage> {
           });
         });
       });
+
+
     }
   }
+
 
   Future<void> _fetchMessages() async {
     if (buyerId == null || sellerId == null) return;
