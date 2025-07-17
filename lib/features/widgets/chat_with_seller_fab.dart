@@ -42,7 +42,7 @@ class _ChatWithSellerFABState extends State<ChatWithSellerFAB>
       '/chat',
       arguments: {
         'sellerId': widget.sellerId,
-        'sellerName': widget.sellerName,
+        'sellerName': widget.sellerName ?? '',
       },
     );
   }

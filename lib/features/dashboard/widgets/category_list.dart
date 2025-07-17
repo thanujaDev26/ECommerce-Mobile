@@ -11,7 +11,7 @@ class CategoryList extends StatelessWidget {
       {"label": "Handcrafts", "icon": Icons.handyman, "route": "/handcrafts"},
       {"label": "Spices", "icon": Icons.local_fire_department, "route": "/spices"},
       {"label": "Herbal", "icon": Icons.eco, "route": "/herbal"},
-      {"label": "Clothing", "icon": Icons.checkroom, "route": "/clothing"},
+      {"label": "Clothing", "icon": Icons.checkroom, "route": "/claypots"},
       {"label": "Tea", "icon": Icons.emoji_food_beverage, "route": "/beverages"},
     ];
 
