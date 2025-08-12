@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
-
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
@@ -26,68 +25,75 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
       if (args == null || args['sellerId'] == null) {
         print("⚠️ No seller info passed in navigation.");
         return;
       }
       setState(() {
-        sellerId = args['sellerId'];
-        sellerName = args['sellerName'] ?? 'Seller';
+        sellerId = args['sellerId'] as String;
+        sellerName = (args['sellerName'] as String?) ?? 'Seller';
       });
-
-      _loadBuyerId();
-      _fetchMessages();
+      await _loadBuyerIdAndConnect(); // will also fetch messages
     });
   }
 
-  Future<void> _loadBuyerId() async {
+  Future<void> _loadBuyerIdAndConnect() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('authToken');
+    if (token == null) {
+      print("⚠️ No auth token found.");
+      return;
+    }
+    final decodedToken = JwtDecoder.decode(token);
+    final id = decodedToken['id'] as String?;
+    if (id == null) {
+      print("⚠️ No id in token.");
+      return;
+    }
 
-    if (token != null) {
-      final decodedToken = JwtDecoder.decode(token);
-      final id = decodedToken['id'];
+    setState(() {
+      buyerId = id;
+    });
 
+    await _chatService.connect(id, (data) {
+      if (!mounted) return;
       setState(() {
-        buyerId = id;
-      });
-
-      await _chatService.connect(id, (data) {
-        if (!mounted) return;
-        setState(() {
-          _messages.add({
-            'from': data['senderId'],
-            'text': data['message'],
-          });
+        _messages.add({
+          'from': data['senderId'] as String,
+          'text': data['message'] as String,
         });
       });
+    });
 
-
-    }
+    await _fetchMessages();
   }
-
 
   Future<void> _fetchMessages() async {
     if (buyerId == null || sellerId == null) return;
 
-    final response = await http.get(Uri.parse(
-      '$BASE_URL/api/v1/messages?userId=$buyerId&sellerId=$sellerId',
-    ));
+    try {
+      final response = await http.get(Uri.parse(
+        '$BASE_URL/api/v1/messages?userId=$buyerId&sellerId=$sellerId',
+      ));
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final List messages = data['messages'];
-
-      setState(() {
-        _messages.addAll(messages.map((msg) => {
-          'from': msg['senderId'],
-          'text': msg['message'],
-        }));
-      });
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List msgs = data['messages'] as List;
+        setState(() {
+          _messages
+            ..clear()
+            ..addAll(msgs.map<Map<String, String>>((msg) => {
+              'from': msg['senderId'] as String,
+              'text': msg['message'] as String,
+            }));
+        });
+      } else {
+        print('Fetch messages failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Fetch messages error: $e');
     }
   }
 
@@ -97,9 +103,7 @@ class _ChatPageState extends State<ChatPage> {
       print("⚠️ Cannot send message: Missing buyerId or sellerId.");
       return;
     }
-
     _chatService.sendMessage(buyerId!, sellerId!, text);
-
     setState(() {
       _messages.add({'from': buyerId!, 'text': text});
       _messageController.clear();
