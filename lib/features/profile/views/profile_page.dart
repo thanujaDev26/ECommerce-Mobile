@@ -111,8 +111,6 @@ class _UserProfilePageState extends State<ProfilePage> {
   }
 
 
-
-
   void _addPaymentMethod() {
     setState(() {
       _paymentMethods.add("New Card **** ${1000 + _paymentMethods.length}");

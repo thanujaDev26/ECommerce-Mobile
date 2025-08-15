@@ -72,27 +72,27 @@ class _ChatWithSellerFABState extends State<ChatWithSellerFAB>
                 ),
               ),
             ),
-            if (widget.unreadMessages > 0)
-              Positioned(
-                right: -4,
-                top: -4,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
-                  child: Center(
-                    child: Text(
-                      '${widget.unreadMessages}',
-                      style: const TextStyle(
-                          fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
+            // if (widget.unreadMessages > 0)
+            //   Positioned(
+            //     right: -4,
+            //     top: -4,
+            //     child: Container(
+            //       padding: const EdgeInsets.all(4),
+            //       decoration: BoxDecoration(
+            //         color: Colors.red,
+            //         shape: BoxShape.circle,
+            //         border: Border.all(color: Colors.white, width: 2),
+            //       ),
+            //       constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+            //       child: Center(
+            //         child: Text(
+            //           '${widget.unreadMessages}',
+            //           style: const TextStyle(
+            //               fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
           ],
         ),
       ),
