@@ -1,5 +1,9 @@
 import 'package:e_commerce/app/constants/app_colors.dart';
+import 'package:e_commerce/features/profile/service/user_profile_service.dart';
+import 'package:e_commerce/features/profile/viewmodels/user_profile_model.dart';
+import 'package:e_commerce/features/sidebar/service/user_avatar_service.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -24,6 +28,8 @@ class _UserProfilePageState extends State<ProfilePage> {
 
   bool _twoFactorEnabled = false;
 
+  UserProfileModel? userProfileModel;
+
   @override
   void dispose() {
     _usernameController.dispose();
@@ -34,25 +40,78 @@ class _UserProfilePageState extends State<ProfilePage> {
     super.dispose();
   }
 
-  void _saveProfile() {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initProfile();
+  }
+
+  Future<void> _initProfile() async {
+    final model = await UserAvatarService.fetchUserAvatar();
+    if (model != null) {
+      setState(() {
+        userProfileModel = UserProfileModel(
+          id: model.id,
+          fName: model.fName,
+          lName: model.lName,
+          email: model.email,
+          avatar: model.avatar,
+          mobile: null,
+          addressLine: null,
+          city: null,
+          district: null,
+          province: null,
+          postalCode: null,
+          sex: null,
+          birthday: null,
+          createdAt: null,
+        );
+        _usernameController.text = model.fullName;
+        _emailController.text = model.email;
+      });
+    }
+  }
+
+
+
+
+  void _saveProfile() async {
     if (_formKey.currentState?.validate() ?? false) {
-      // TODO: Connect your backend here to save profile info including:
-      // - Username
-      // - Email
-      // - Password change if provided
-      // - 2FA toggle status
-      // - Payment methods if updated
+      bool passwordChanged = true;
+
+      // Only attempt password change if fields are filled
+      if (_passwordController.text.isNotEmpty &&
+          _newPasswordController.text.isNotEmpty) {
+        passwordChanged = await UserProfileService.changePassword(
+          currentPassword: _passwordController.text,
+          newPassword: _newPasswordController.text,
+        );
+
+        if (!passwordChanged) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to change password')),
+          );
+          return;
+        }
+      }
+
+
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile saved')),
+        const SnackBar(content: Text('Profile saved successfully')),
       );
-      // Clear password fields after saving for security
+
+
       _passwordController.clear();
       _newPasswordController.clear();
       _confirmPasswordController.clear();
       setState(() {});
     }
   }
+
+
+
 
   void _addPaymentMethod() {
     setState(() {
@@ -94,21 +153,32 @@ class _UserProfilePageState extends State<ProfilePage> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage:
-                      NetworkImage("https://i.pravatar.cc/150?img=3"),
+                      backgroundImage: userProfileModel?.avatar != null
+                          ? NetworkImage(userProfileModel!.avatar!)
+                          : null,
+                      child: userProfileModel?.avatar == null
+                          ? const Icon(Icons.person, size: 50, color: Colors.white)
+                          : null,
                     ),
                     const SizedBox(width: 20),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text("Thanuja Priyadarshane",
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 4),
-                          Text("thanujapriyadarshane26@gmail.com"),
-                          SizedBox(height: 4),
-                          Text("Joined: Jan 2023"),
+                        children: [
+                          Text(
+                            userProfileModel?.fullName ?? "Loading...",
+                            style: const TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(userProfileModel?.email ?? ""),
+                          const SizedBox(height: 4),
+                          Text(
+                            userProfileModel?.createdAt != null
+                                ? "Joined: ${userProfileModel!.createdAt!.substring(0, 10)}"
+                                : "",
+                          ),
                         ],
                       ),
                     ),

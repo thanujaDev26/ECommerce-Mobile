@@ -8,6 +8,7 @@ import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
+import 'package:http_parser/http_parser.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -65,7 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // Optional: type check via extension/MIME if you want stricter control
+
     setState(() => _avatar = img);
   }
 
@@ -98,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final url = Uri.parse('$BASE_URL/api/v1/auth/register');
       final req = http.MultipartRequest('POST', url);
 
-      // fields
+
       req.fields.addAll({
         "fName": firstNameController.text.trim(),
         "lName": lastNameController.text.trim(),
@@ -115,13 +116,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (birthday != null) "birthday": DateFormat('yyyy-MM-dd').format(birthday!),
       });
 
-      // file (field name MUST be 'avatar' to match your backend)
+
       if (_avatar != null) {
-        req.files.add(await http.MultipartFile.fromPath(
-          'avatar',
-          _avatar!.path,
-          filename: p.basename(_avatar!.path),
-        ));
+        String mimeType = 'image/jpeg';
+        final ext = p.extension(_avatar!.path).toLowerCase();
+
+        if (ext == '.png') mimeType = 'image/png';
+        else if (ext == '.webp') mimeType = 'image/webp';
+        else if (ext == '.heic' || ext == '.heif') mimeType = 'image/heic';
+
+        req.files.add(
+          await http.MultipartFile.fromPath(
+            'avatar',
+            _avatar!.path,
+            filename: p.basename(_avatar!.path),
+            contentType: MediaType('image', mimeType.split('/')[1]),
+          ),
+        );
       }
 
       final streamed = await req.send();
@@ -147,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } catch (e) {
       CustomSnackbar.show(
         context,
-        message: 'Something went wrong. Please try again.',
+        message: 'Something went wrong!',
         backgroundColor: Colors.red,
         icon: Icons.warning_rounded,
       );

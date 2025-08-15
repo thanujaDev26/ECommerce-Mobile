@@ -1,5 +1,7 @@
 import 'package:e_commerce/features/dashboard/services/user_service.dart';
 import 'package:e_commerce/features/dashboard/viewmodels/user_profile.dart';
+import 'package:e_commerce/features/sidebar/model/user_avatar_model.dart';
+import 'package:e_commerce/features/sidebar/service/user_avatar_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,12 +25,14 @@ class _AppSidebarState extends State<AppSidebar> {
   String? _token;
   UserProfile? userProfile;
 
+  UserAvatar? userAvatar;
+
   @override
   void initState() {
     super.initState();
     _currentDarkMode = widget.isDarkMode;
     _loadToken();
-    _loadUserProfile();
+    _loadUserAvatar();
   }
 
   Future<void> _loadToken() async {
@@ -50,6 +54,15 @@ class _AppSidebarState extends State<AppSidebar> {
           : '';
       setState(() {
         userProfile = UserProfile.fromUserModel(model);
+      });
+    }
+  }
+
+  Future<void> _loadUserAvatar() async {
+    final model = await UserAvatarService.fetchUserAvatar();
+    if (model != null) {
+      setState(() {
+        userAvatar = model;
       });
     }
   }
@@ -81,14 +94,20 @@ class _AppSidebarState extends State<AppSidebar> {
             DrawerHeader(
               child: Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 30,
-                    backgroundColor: Colors.orange,
-                    child: Icon(Icons.person, size: 30, color: Colors.white),
+                    backgroundColor: Colors.orange.shade300,
+                    backgroundImage: userAvatar?.avatar != null
+                        ? NetworkImage(userAvatar!.avatar!)
+                        : null,
+                    child: userAvatar?.avatar == null
+                        ? const Icon(Icons.person, size: 30, color: Colors.white)
+                        : null,
                   ),
                   const SizedBox(width: 16),
-                  userProfile == null ? const CircularProgressIndicator() :
-                  RichText(
+                  userAvatar == null
+                      ? const CircularProgressIndicator()
+                      : RichText(
                     text: TextSpan(
                       style: TextStyle(
                         color: isDarkMode ? Colors.white : Colors.black,
@@ -96,9 +115,9 @@ class _AppSidebarState extends State<AppSidebar> {
                         fontWeight: FontWeight.bold,
                       ),
                       children: [
-                        TextSpan(text: _getFirstName(userProfile!.name) + '\n'),
+                        TextSpan(text: userAvatar!.fName + '\n'),
                         TextSpan(
-                          text: _getLastName(userProfile!.name),
+                          text: userAvatar!.lName,
                           style: TextStyle(
                             fontWeight: FontWeight.normal,
                             fontSize: 16,
@@ -107,7 +126,7 @@ class _AppSidebarState extends State<AppSidebar> {
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
