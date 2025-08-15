@@ -1,16 +1,16 @@
+import 'package:e_commerce/features/widgets/comment_section_common_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/features/widgets/chat_with_seller_fab.dart';
-import 'package:e_commerce/features/widgets/comment_section_common_ui.dart';
 import 'package:e_commerce/features/widgets/similar_products_list.dart';
 import 'package:e_commerce/features/notifications/notification_service.dart';
 import 'package:e_commerce/features/cart/cart_service.dart';
 import 'package:e_commerce/widgets/custom_snackbar.dart';
-
 import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
+
 
 class HandcraftProductDetailPage extends StatefulWidget {
   final HandcraftProduct product;
@@ -27,8 +27,6 @@ class HandcraftProductDetailPage extends StatefulWidget {
 }
 
 class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage> {
-  bool _showAllReviews = false;
-
   Future<void> _addToCartAndNotify(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('authToken');
@@ -67,8 +65,6 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
-    final reviews = widget.product.ratings ?? [];
-    final visibleReviews = _showAllReviews ? reviews : reviews.take(2).toList();
     final textColor = isDarkMode ? Colors.white : Colors.black;
 
     return Scaffold(
@@ -121,7 +117,8 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
                         rating: widget.product.averageRating,
                         itemCount: 5,
                         itemSize: 20.0,
-                        itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
+                        itemBuilder: (context, _) =>
+                        const Icon(Icons.star, color: Colors.amber),
                       ),
                       const SizedBox(height: 8),
                       Text(
@@ -140,97 +137,10 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
                           color: textColor,
                         ),
                       ),
-                      if (reviews.isNotEmpty) ...[
-                        const SizedBox(height: 24),
-                        Text(
-                          'Customer Reviews',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: textColor,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        AnimatedSize(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                          child: ClipRect(
-                            child: Column(
-                              children: visibleReviews.map((rating) {
-                                return Card(
-                                  elevation: 2,
-                                  margin: const EdgeInsets.symmetric(vertical: 8),
-                                  color: theme.colorScheme.surface,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
-                                          child: const Icon(Icons.person, color: Colors.grey),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              RatingBarIndicator(
-                                                rating: rating.rating.toDouble(),
-                                                itemCount: 5,
-                                                itemSize: 18.0,
-                                                itemBuilder: (context, _) =>
-                                                const Icon(Icons.star, color: Colors.amber),
-                                              ),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                rating.review,
-                                                style: TextStyle(
-                                                  color: textColor,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                'Posted on: ${DateTime.now().toLocal().toString().split(' ')[0]}',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: isDarkMode ? Colors.grey[400] : Colors.grey[700],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                        if (reviews.length > 2)
-                          TextButton(
-                            onPressed: () {
-                              setState(() => _showAllReviews = !_showAllReviews);
-                            },
-                            child: Text(
-                              _showAllReviews ? 'Show Less' : 'See All Reviews',
-                              style: TextStyle(
-                                color: theme.colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                      ],
                       const SizedBox(height: 24),
-                      ProductCommentBox(
-                        productId: widget.product.id,
-                        onReviewSubmitted: () {
-                          // TODO: Refresh ratings logic
-                        },
-                      ),
+                      // Product Comment Box
+                      ProductCommentBox(productId: widget.product.id),
+                      const SizedBox(height: 24),
                       SimilarProductsList(
                         currentProduct: widget.product,
                         allProducts: widget.allProducts,
@@ -244,7 +154,7 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
           ChatWithSellerFAB(
             sellerId: widget.product.sellerId,
             sellerName: widget.product.sellerName ?? 'Seller',
-            unreadMessages: 3, // example value, replace with real unread count
+            unreadMessages: 3,
           ),
         ],
       ),
