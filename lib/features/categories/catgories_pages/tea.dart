@@ -2,6 +2,7 @@ import 'package:e_commerce/features/categories/catgories_pages/common_pages/tea_
 import 'package:e_commerce/features/categories/catgories_pages/models/tea_model.dart';
 import 'package:e_commerce/features/categories/catgories_pages/services/tea_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Tea extends StatefulWidget {
   const Tea({super.key});
@@ -137,7 +138,11 @@ class _HandcraftsState extends State<Tea> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "Rs. ${product.price.toStringAsFixed(2)}",
+                                    NumberFormat.currency(
+                                      locale: 'en_US',
+                                      symbol: 'LKR. ',
+                                      decimalDigits: 2,
+                                    ).format(product.price),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.green,

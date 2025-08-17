@@ -2,6 +2,7 @@ import 'package:e_commerce/features/categories/catgories_pages/common_pages/herb
 import 'package:e_commerce/features/categories/catgories_pages/models/herbal_model.dart';
 import 'package:e_commerce/features/categories/catgories_pages/services/herbal_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Herbal extends StatefulWidget {
   const Herbal({super.key});
@@ -137,7 +138,11 @@ class _HerbalState extends State<Herbal> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "Rs. ${product.price.toStringAsFixed(2)}",
+                                    NumberFormat.currency(
+                                      locale: 'en_US',
+                                      symbol: 'LKR. ',
+                                      decimalDigits: 2,
+                                    ).format(product.price),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.green,
