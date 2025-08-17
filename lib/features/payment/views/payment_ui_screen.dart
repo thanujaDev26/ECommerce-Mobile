@@ -1,8 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/features/cart/cart_service.dart';
+import 'package:e_commerce/features/payment/views/card_number_input_formatter.dart';
+import 'package:e_commerce/features/payment/views/digital_limit_input_formatter.dart';
 import 'package:e_commerce/features/payment/widgets/advert_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'cod_address_screen.dart';
+import 'package:flutter/services.dart';
 
 class PaymentUiScreen extends StatefulWidget {
   const PaymentUiScreen({super.key});
@@ -12,7 +17,7 @@ class PaymentUiScreen extends StatefulWidget {
 }
 
 class _PaymentDashboardState extends State<PaymentUiScreen> {
-  String selectedPaymentMethod = "Credit Card";
+  String selectedPaymentMethod = "Credit/Debit";
   final TextEditingController cardNumberController = TextEditingController();
   final TextEditingController expiryController = TextEditingController();
   final TextEditingController cvvController = TextEditingController();
@@ -22,6 +27,12 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
 
   List<CartItem> cartItems = [];
   bool isCartLoading = true;
+
+  final _currencyFormatter = NumberFormat.currency(
+    locale: "en_US",
+    symbol: "LKR ",
+    decimalDigits: 2,
+  );
 
   double get subTotal => cartItems.fold(0.0, (sum, item) => sum + item.total);
   double get deliveryFee => cartItems.isEmpty ? 0.0 : 500.0;
@@ -56,11 +67,19 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
         _validateCvv(cvvController.text);
   }
 
-  bool _validateCardNumber(String input) => RegExp(r'^\d{16}$').hasMatch(input);
+  bool _validateCardNumber(String input) => RegExp(r'^\d{16}$').hasMatch(input.replaceAll(' ', ''));
   bool _validateExpiry(String input) => RegExp(r'^(0[1-9]|1[0-2])\/?([0-9]{2})$').hasMatch(input);
   bool _validateCvv(String input) => RegExp(r'^\d{3,4}$').hasMatch(input);
 
   void _onPayNow() async {
+    if (selectedPaymentMethod == "Cash On Delivery") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const CodAddressScreen()),
+      );
+      return;
+    }
+
     if (!isFormValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill all fields correctly.")),
@@ -107,46 +126,42 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Total Amount Card
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [primaryColor.withOpacity(0.9), primaryColor],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [primaryColor.withOpacity(0.9), primaryColor],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: primaryColor.withOpacity(0.4),
+                    offset: const Offset(0, 8),
+                    blurRadius: 20,
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: primaryColor.withOpacity(0.4),
-                      offset: const Offset(0, 8),
-                      blurRadius: 20,
+                ],
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    "Total Amount",
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: Colors.white.withOpacity(0.9),
                     ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Total Amount",
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: Colors.white.withOpacity(0.9),
-                      ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _currencyFormatter.format(grandTotal),
+                    style: const TextStyle(
+                      fontSize: 42,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1.2,
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Rs. ${grandTotal.toStringAsFixed(2)}",
-                      style: const TextStyle(
-                        fontSize: 42,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
 
@@ -169,57 +184,67 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
             AdvertVideoPlayer(videoPath: "assets/demo_images/0618.mp4"),
 
             const SizedBox(height: 30),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    offset: Offset(0, 6),
-                    blurRadius: 14,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  _buildTextField("Card Number", TextInputType.number, controller: cardNumberController),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildTextField(
-                          "Expiry Date (MM/YY)",
-                          TextInputType.datetime,
-                          controller: expiryController,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildTextField(
-                          "CVV",
-                          TextInputType.number,
-                          obscure: isCvvObscured,
-                          controller: cvvController,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              isCvvObscured ? Icons.visibility_off : Icons.visibility,
-                              color: Colors.grey,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isCvvObscured = !isCvvObscured;
-                              });
-                            },
+            if (selectedPaymentMethod == "Credit/Debit")
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      offset: Offset(0, 6),
+                      blurRadius: 14,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildTextField(
+                      "Card Number",
+                      TextInputType.number,
+                      controller: cardNumberController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        DigitLimitInputFormatter(maxDigits: 16),
+                        CardNumberInputFormatter(),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            "Expiry Date (MM/YY)",
+                            TextInputType.datetime,
+                            controller: expiryController,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildTextField(
+                            "CVV",
+                            TextInputType.number,
+                            obscure: isCvvObscured,
+                            controller: cvvController,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                isCvvObscured ? Icons.visibility_off : Icons.visibility,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  isCvvObscured = !isCvvObscured;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
 
             const SizedBox(height: 40),
             SizedBox(
@@ -235,9 +260,9 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
                 ),
                 child: isLoading
                     ? const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
-                    : const Text(
-                  "Pay Now",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                    : Text(
+                  selectedPaymentMethod == "Cash On Delivery" ? "Proceed" : "Pay Now",
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ),
@@ -247,13 +272,21 @@ class _PaymentDashboardState extends State<PaymentUiScreen> {
     );
   }
 
-  Widget _buildTextField(String label, TextInputType type,
-      {required TextEditingController controller, bool obscure = false, Widget? suffixIcon}) {
+  // UPDATED: Added inputFormatters parameter
+  Widget _buildTextField(
+      String label,
+      TextInputType type, {
+        required TextEditingController controller,
+        bool obscure = false,
+        Widget? suffixIcon,
+        List<TextInputFormatter>? inputFormatters,
+      }) {
     final theme = Theme.of(context);
     return TextField(
       controller: controller,
       obscureText: obscure,
       keyboardType: type,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         labelText: label,
         suffixIcon: suffixIcon,

@@ -5,6 +5,8 @@ import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 import 'package:e_commerce/features/widgets/product_details_common_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
+
 
 class TopItemsGrid extends StatefulWidget {
   const TopItemsGrid({super.key});
@@ -38,6 +40,7 @@ class _TopItemsGridState extends State<TopItemsGrid> {
     _timer.cancel();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +134,11 @@ class _TopItemsGridState extends State<TopItemsGrid> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "LKR ${product.price}",
+                        NumberFormat.currency(
+                          locale: 'en_US',
+                          symbol: 'LKR ',
+                          decimalDigits: 2,
+                        ).format(product.price),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,

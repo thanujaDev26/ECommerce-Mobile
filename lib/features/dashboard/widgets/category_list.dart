@@ -12,7 +12,7 @@ class CategoryList extends StatelessWidget {
       {"label": "Spices", "icon": Icons.local_fire_department, "route": "/spices"},
       {"label": "Herbal", "icon": Icons.eco, "route": "/herbal"},
       {"label": "Clothing", "icon": Icons.checkroom, "route": "/claypots"},
-      {"label": "Tea", "icon": Icons.emoji_food_beverage, "route": "/beverages"},
+      {"label": "Beverages", "icon": Icons.emoji_food_beverage, "route": "/beverages"},
     ];
 
     final Map<String, Color> categoryColors = {
@@ -20,7 +20,7 @@ class CategoryList extends StatelessWidget {
       "Spices": Colors.redAccent,
       "Herbal": Colors.green,
       "Clothing": Colors.deepPurpleAccent,
-      "Tea": Colors.brown.shade300,
+      "Beverages": Colors.brown.shade300,
     };
 
     return SizedBox(
