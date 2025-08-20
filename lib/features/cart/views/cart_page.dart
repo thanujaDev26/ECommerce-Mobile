@@ -146,9 +146,9 @@ class _CartPageState extends State<CartPage> with RouteAware{
                               children: [
                                 Text(item.name, style: theme.textTheme.titleMedium),
                                 const SizedBox(height: 8),
-                                Text('Rs. ${item.finalPrice.toStringAsFixed(2)} x ${item.quantity}'),
+                                Text('LKR. ${item.finalPrice.toStringAsFixed(2)} x ${item.quantity}'),
                                 const SizedBox(height: 4),
-                                Text('Total: Rs. ${item.total.toStringAsFixed(2)}'),
+                                Text('Total: LKR. ${item.total.toStringAsFixed(2)}'),
                               ],
                             ),
                           )
@@ -164,7 +164,7 @@ class _CartPageState extends State<CartPage> with RouteAware{
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _summaryRow("Subtotal", subTotal),
-                _summaryRow("Discount", -discount),
+                _summaryRow("Special Discount", 0),
                 _summaryRow("Delivery", deliveryFee),
                 Divider(),
                 _summaryRow("Grand Total", grandTotal, isBold: true),
@@ -192,15 +192,29 @@ class _CartPageState extends State<CartPage> with RouteAware{
     final style = isBold
         ? const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
         : const TextStyle(fontSize: 14);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: style),
-          Text("Rs. ${amount.toStringAsFixed(2)}", style: style),
-        ],
-      ),
+
+    return Table(
+      columnWidths: const {
+        0: FlexColumnWidth(),
+        1: IntrinsicColumnWidth(), // Amount column sized neatly
+      },
+      children: [
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              child: Text(label, style: style),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text("LKR ${amount.toStringAsFixed(2)}", style: style),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
