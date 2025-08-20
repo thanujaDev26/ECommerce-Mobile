@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:e_commerce/features/dashboard/viewmodels/handcraft_model.dart';
 import 'package:e_commerce/features/widgets/product_details_common_ui.dart';
+import 'package:intl/intl.dart';
 
 class SimilarProductsList extends StatelessWidget {
   final HandcraftProduct currentProduct;
@@ -104,7 +105,11 @@ class SimilarProductsList extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              "LKR ${product.price.toStringAsFixed(0)}",
+                              NumberFormat.currency(
+                                locale: 'en_US',
+                                symbol: 'LKR ',
+                                decimalDigits: 2,
+                              ).format(product.price),
                               style: textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.primary,

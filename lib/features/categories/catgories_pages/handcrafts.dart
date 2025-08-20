@@ -2,6 +2,7 @@ import 'package:e_commerce/features/categories/catgories_pages/common_pages/hand
 import 'package:e_commerce/features/categories/catgories_pages/models/handcraft_model.dart';
 import 'package:e_commerce/features/categories/catgories_pages/services/handcraft_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Handcrafts extends StatefulWidget {
   const Handcrafts({super.key});
@@ -137,7 +138,11 @@ class _HandcraftsState extends State<Handcrafts> {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    "Rs. ${product.price.toStringAsFixed(2)}",
+                                    NumberFormat.currency(
+                                      locale: 'en_US',
+                                      symbol: 'LKR. ',
+                                      decimalDigits: 2,
+                                    ).format(product.price),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.green,

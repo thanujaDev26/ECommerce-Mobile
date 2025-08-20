@@ -1,6 +1,7 @@
 import 'package:e_commerce/features/widgets/comment_section_common_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:e_commerce/app/constants/app_colors.dart';
@@ -122,7 +123,11 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "LKR - ${widget.product.price}",
+                        NumberFormat.currency(
+                          locale: 'en_US',
+                          symbol: 'LKR ',
+                          decimalDigits: 2,
+                        ).format(widget.product.price),
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -138,7 +143,7 @@ class _HandcraftProductDetailPageState extends State<HandcraftProductDetailPage>
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // Product Comment Box
+
                       ProductCommentBox(productId: widget.product.id),
                       const SizedBox(height: 24),
                       SimilarProductsList(
