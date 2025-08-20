@@ -1,6 +1,7 @@
 import 'package:e_commerce/app/constants/app_colors.dart';
 import 'package:e_commerce/app/utils/config.dart';
 import 'package:e_commerce/features/cart/cart_service.dart';
+import 'package:e_commerce/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -73,16 +74,12 @@ class _PaymentUiScreenState extends State<PaymentUiScreen> {
 
       setState(() => isLoading = false);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data["message"] ?? "Checkout completed")),
-        );
+        CustomSnackbar.show(context, message: data["message"] ?? "Checkout completed", backgroundColor: Colors.green, icon: Icons.check_circle);
         Navigator.pop(context, true);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Checkout failed: ${response.body}")),
-        );
+        CustomSnackbar.show(context, message:"Checkout failed: ${response.body}", backgroundColor: Colors.red, icon: Icons.warning_rounded);
       }
     } catch (e) {
       setState(() => isLoading = false);
@@ -114,9 +111,7 @@ class _PaymentUiScreenState extends State<PaymentUiScreen> {
       if (nameController.text.isEmpty ||
           addressController.text.isEmpty ||
           phoneController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please fill all delivery details.")),
-        );
+        CustomSnackbar.show(context, message:"Please Fill the Details", backgroundColor: Colors.red, icon: Icons.question_mark);
         return;
       }
 
@@ -167,7 +162,6 @@ class _PaymentUiScreenState extends State<PaymentUiScreen> {
 
     return GestureDetector(
       onTap: () {
-        // This will hide the keyboard if user taps outside TextField
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(

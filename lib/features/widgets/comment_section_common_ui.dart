@@ -217,7 +217,7 @@ class _ProductCommentBoxState extends State<ProductCommentBox> {
     return Column(
       children: [
         SizedBox(
-          height: 180,
+          height: 200,
           child: PageView.builder(
             itemCount: visibleReviews.length,
             controller: PageController(viewportFraction: 0.85),
